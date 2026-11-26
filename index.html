@@ -228,8 +228,29 @@ svg{display:block}
 #app.live #boardbar,#app.live #boardWrap,#app.live #defbar,#app.live #btnSidebar,#app.live #curPlay,#app.live #btnOverwrite,#app.live #btnSaveTop{display:none}
 .lv-top{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line);flex:none;overflow-x:auto;touch-action:pan-x}
 .lv-lbl{font-size:13px;color:var(--muted);font-weight:800;margin-left:6px;flex:none}
-#lvDelay button{min-width:64px;font-size:16px}
-#lvDelay button.on{background:#facc15;color:#1a1003}
+.lv-delays{display:flex;gap:8px;align-items:center;padding:6px 10px;background:var(--panel);border-bottom:1px solid var(--line);flex:none;overflow-x:auto;touch-action:pan-x;scrollbar-width:none}
+.lv-delays::-webkit-scrollbar,.lv-top::-webkit-scrollbar{display:none}
+.lv-dseg{flex:none}
+.lv-dseg button{min-width:58px;font-size:15.5px}
+.lv-dseg button.on{background:#facc15;color:#1a1003}
+.lv-custom{display:flex;gap:6px;flex:none;align-items:center}
+.lv-custom input{width:76px;height:48px;border-radius:12px;background:var(--bg);border:1.5px solid var(--line);color:var(--text);font-size:17px;text-align:center;font-weight:800}
+.lv-custom input.on{border-color:#facc15;color:#fde68a}
+.lv-info{font-size:12.5px;color:var(--muted);font-weight:700;white-space:nowrap;margin-left:auto;padding-left:8px;font-variant-numeric:tabular-nums}
+.lv-seek{display:flex;gap:6px;align-items:center;padding:8px 10px;background:var(--panel);border-top:1px solid var(--line);flex:none}
+.lv-jump{flex:none;min-width:58px;height:52px;border-radius:12px;background:var(--panel2);border:1.5px solid var(--line);font-weight:900;font-size:14px;line-height:1.15}
+.lv-jump:disabled{opacity:.35}
+.lv-follow{background:#7c2d12;border-color:#f97316;color:#ffedd5;font-size:12px;min-width:84px}
+.lv-follow[hidden]{display:none}
+.lv-bar-wrap{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#lvSeek{width:100%;height:30px;margin:0;-webkit-appearance:none;appearance:none;background:transparent;touch-action:none}
+#lvSeek::-webkit-slider-runnable-track{height:10px;border-radius:999px;background:linear-gradient(90deg,#334155,#475569)}
+#lvSeek::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-10px;border-radius:50%;background:#facc15;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+#lvSeek::-moz-range-track{height:10px;border-radius:999px;background:#475569}
+#lvSeek::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#facc15;border:4px solid #fff}
+#lvSeek:disabled{opacity:.4}
+.lv-seek-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:800;font-variant-numeric:tabular-nums}
+.lv-seek-lbl b{color:#fde68a}
 .lv-stage{position:relative;flex:1;min-height:0;background:#000;overflow:hidden}
 .lv-main{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;background:#000}
 .lv-main.show{opacity:1}
@@ -249,10 +270,10 @@ svg{display:block}
 .lv-freeze{position:absolute;inset:0;border:8px solid #facc15;pointer-events:none;display:none;z-index:3}
 .lv-freeze.show{display:block}
 .lv-bottom{display:flex;gap:8px;padding:10px;background:var(--panel);border-top:1px solid var(--line);flex:none}
-.lv-pause{flex:1;height:76px;border-radius:18px;font-size:23px;font-weight:900;background:#facc15;color:#1a1003}
+.lv-pause{flex:1;height:64px;border-radius:18px;font-size:23px;font-weight:900;background:#facc15;color:#1a1003}
 .lv-pause.paused{background:#22c55e;color:#04210f}
 .lv-pause:disabled,.lv-step:disabled{opacity:.35}
-.lv-step{width:120px;height:76px;border-radius:18px;background:var(--panel2);border:1.5px solid var(--line);font-weight:900;font-size:16px}
+.lv-step{width:120px;height:64px;border-radius:18px;background:var(--panel2);border:1.5px solid var(--line);font-weight:900;font-size:16px}
 .lv-pause:active,.lv-step:active{transform:scale(.97)}
 
 /* ---------- 使い方ガイド ---------- */
@@ -280,6 +301,98 @@ svg{display:block}
 .help-foot label{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700;flex:1;min-height:48px;cursor:pointer}
 .help-foot input{width:26px;height:26px;accent-color:var(--accent);flex:none}
 .help-foot .btn{min-width:140px;height:52px}
+
+/* ---------- ステップ再生バー ---------- */
+#stepbar{flex:none;height:62px;display:flex;align-items:center;gap:6px;padding:8px 10px 6px;background:#0f1620;border-top:1px solid var(--line);position:relative}
+#app.live #stepbar{display:none}
+.st-prog{position:absolute;left:0;right:0;top:0;height:3px;background:transparent}
+.st-prog i{display:block;height:100%;width:0;background:#22c55e}
+.st-add{flex:none;height:46px;padding:0 12px;border-radius:12px;background:#0e7490;color:#ecfeff;font-weight:900;font-size:14px;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.st-add small{font-size:10px;font-weight:700;opacity:.85}
+.st-chips{flex:1;min-width:0;display:flex;gap:5px;overflow-x:auto;touch-action:pan-x;scrollbar-width:none;align-items:center}
+.st-chips::-webkit-scrollbar{display:none}
+.st-chip{flex:none;min-width:44px;height:40px;padding:0 8px;border-radius:10px;background:var(--panel2);border:1.5px solid var(--line);font-weight:900;font-size:13px;color:#b6c2d2}
+.st-chip.cur{border-color:#22c55e;color:#86efac;background:#0c2617}
+.st-chip.sel{border-color:#facc15;color:#fde68a}
+.st-empty{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-btn{flex:none;width:48px;height:46px;border-radius:12px;background:var(--panel2);border:1.5px solid var(--line);font-size:19px;font-weight:900}
+.st-btn:disabled{opacity:.35}
+.st-play{background:#16a34a;border-color:#16a34a;color:#fff;width:56px}
+.st-play.on{background:#facc15;border-color:#facc15;color:#1a1003}
+.st-speed{flex:none;padding:2px}
+.st-speed button{height:40px;padding:0 9px;font-size:13px}
+#app.mtg .st-speed button{padding:0 6px;font-size:12px}
+#app.mtg .st-add{padding:0 8px;font-size:13px}
+.st-add:active,.st-btn:active,.st-chip:active{transform:scale(.95)}
+.st-badge{display:inline-block;font-size:10.5px;font-weight:900;background:#16a34a;color:#fff;border-radius:5px;padding:1px 5px;margin-right:5px;vertical-align:2px}
+.tag.link{--c:#4ade80}
+#localVid{position:absolute;inset:0;width:100%;height:100%;background:#000;object-fit:contain;display:none}
+.player-box.local #localVid{display:block}
+.player-box.local iframe,.player-box.local #ytPlayer{display:none}
+.vtrace{flex:none;width:64px;height:58px;border-radius:12px;background:#1e1b4b;border:1.5px solid #6366f1;color:#c7d2fe;font-weight:900;font-size:12px;line-height:1.2}
+.vtrace small{display:block;font-size:9.5px;opacity:.8}
+
+/* ---------- UX仕上げ：タッチ領域48px以上・大きなカード ---------- */
+#topbar{height:70px}
+.seg button{min-height:48px}
+#boardbar{height:66px}
+#boardbar .seg button{height:48px;font-size:15px;padding:0 14px}
+.cam{height:48px;font-size:14.5px}
+.chip{height:48px;padding:0 15px;font-size:13.5px}
+#stepbar{height:70px}
+.st-add{height:50px;min-width:118px}
+.st-btn{width:52px;height:50px}
+.st-play{width:auto;min-width:104px;padding:0 14px;font-size:16px}
+.st-play.flash{animation:flash 0.8s ease 3}
+@keyframes flash{50%{box-shadow:0 0 0 6px rgba(34,197,94,.45);transform:scale(1.05)}}
+.st-chip{height:50px;min-width:50px}
+.st-speed button{height:48px;min-width:50px;padding:0 6px}
+#app.mtg .st-speed{display:none}
+#app.mtg .st-play{min-width:88px}
+#btnVFile{min-width:48px;padding:0 10px}
+.pi-more,.ci-more{width:48px;min-height:56px}
+.kf-dot{width:46px;height:46px;margin-left:-23px;top:6px;background:transparent;border:none;box-shadow:none;display:flex;align-items:center;justify-content:center;padding:0}
+.kf-dot span{width:26px;height:26px;border-radius:50%;background:#8b5cf6;border:3px solid #ede9fe;box-shadow:0 2px 6px rgba(0,0,0,.4);font-size:10px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center}
+.kf-dot.sel span{background:#facc15;border-color:#fff;color:#1a1003}
+.ibtn{min-width:48px;min-height:48px}
+.menu-btn{font-size:22px;background:var(--panel2)}
+#app.live .menu-btn{margin-left:auto}
+.color-dot{width:28px;height:28px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+#app.rec .st-add{background:#dc2626;color:#fff;animation:recPulse 1.4s infinite}
+@keyframes recPulse{50%{box-shadow:0 0 0 6px rgba(220,38,38,.35)}}
+#recBadge{position:absolute;left:12px;top:12px;z-index:6;display:none;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(127,29,29,.92);color:#fff;font-weight:900;font-size:15px;letter-spacing:.04em;box-shadow:0 6px 18px rgba(0,0,0,.4);pointer-events:none}
+#recBadge i{width:12px;height:12px;border-radius:50%;background:#ef4444;box-shadow:0 0 10px #ef4444;animation:blink 1s infinite}
+#recBadge small{font-size:11.5px;font-weight:700;opacity:.85;letter-spacing:0}
+#recBadge.tick{animation:tick .5s}
+@keyframes blink{50%{opacity:.25}}
+@keyframes tick{30%{transform:scale(1.08);background:rgba(22,163,74,.95)}}
+#app.rec #recBadge{display:flex}
+#quickbar{flex:none;height:98px;display:flex;gap:8px;padding:9px 10px;overflow-x:auto;background:#0d141c;border-top:1px solid var(--line);touch-action:pan-x;scroll-snap-type:x proximity;scrollbar-width:none}
+#quickbar::-webkit-scrollbar{display:none}
+#app.mtg #quickbar,#app.live #quickbar{display:none}
+.qcard{flex:none;width:236px;height:80px;display:flex;align-items:center;gap:10px;padding:8px;border-radius:16px;background:var(--panel2);border:1.5px solid var(--line);text-align:left;scroll-snap-align:start;position:relative;overflow:hidden}
+.qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,#38bdf8)}
+.qcard.on{border-color:#22c55e;background:#0c2617}
+.qcard:active{transform:scale(.96)}
+.qthumb{width:76px;height:56px;border-radius:8px;flex:none;pointer-events:none;margin-left:4px}
+.qbody{display:flex;flex-direction:column;min-width:0;gap:2px;pointer-events:none}
+.qcat{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:var(--c,#38bdf8)}
+.qtitle{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qsub{font-size:11.5px;color:#86efac;font-weight:700}
+.qadd{width:190px;border-style:dashed;justify-content:center}
+.qadd::before{display:none}
+.qplus{font-size:30px;font-weight:300;color:var(--accent);margin-right:2px}
+.qadd .qsub{color:var(--muted)}
+.sheet.drawer{position:fixed;right:0;top:0;bottom:0;width:min(400px,92vw);max-height:none;border-radius:22px 0 0 22px;padding:14px 14px calc(16px + env(safe-area-inset-bottom));overflow-y:auto;animation:slideIn .22s ease}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}}
+.menu-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.menu-head b{font-size:20px}
+.menu-sec{font-size:12px;font-weight:800;color:var(--muted);margin:14px 6px 6px;letter-spacing:.05em}
+.mrow{width:100%;min-height:58px;display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);margin-bottom:6px;text-align:left}
+.mrow:active{transform:scale(.98)}
+.mi{width:36px;height:36px;border-radius:10px;background:var(--panel3);display:grid;place-items:center;font-size:18px;flex:none}
+.mt{font-size:15.5px;font-weight:800;display:flex;flex-direction:column}
+.mt small{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
 
 /* ---------- Toast / modal ---------- */
 #toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) translateY(10px);background:rgba(15,23,32,.94);border:1px solid var(--line);color:var(--text);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;box-shadow:0 6px 24px rgba(0,0,0,.4)}
@@ -323,11 +436,7 @@ svg{display:block}
     <div class="list-head"><span id="listTitle"></span><span>タップで呼び出し</span></div>
     <div id="playList" class="play-list scrollable"></div>
     <div class="sb-foot">
-      <button class="btn" id="btnExport">⇪ 書き出し</button>
-      <button class="btn" id="btnImport">⇩ 読み込み</button>
-      <button class="btn" id="btnTheme">コート：木目</button>
-      <button class="btn" id="btnPencil">✎ ペン優先</button>
-      <div class="sb-note">盤面とプレーはこの端末に自動保存されます</div>
+      <div class="sb-note">✓ このiPadに自動保存（書き出しは ⚙️）</div>
     </div>
   </aside>
 
@@ -336,9 +445,12 @@ svg{display:block}
     <div class="v-url">
       <input type="url" id="vUrl" placeholder="YouTubeのURL（限定公開・youtu.be 可）" autocomplete="off" autocapitalize="off" spellcheck="false">
       <button class="btn primary" id="btnVLoad">読込</button>
+      <button class="btn" id="btnVFile" title="端末の動画ファイル">📁</button>
       <button class="btn" id="btnVHist">履歴</button>
     </div>
-    <div class="player-box">
+    <input type="file" id="localFile" accept="video/*" hidden>
+    <div class="player-box" id="playerBox">
+      <video id="localVid" playsinline controls></video>
       <div id="ytPlayer"></div>
       <div class="v-empty" id="vEmpty"><b>YouTube動画を読み込んでください</b>URLを上に貼り付けて「読込」。<br>限定公開の試合動画もそのまま使えます。</div>
     </div>
@@ -356,6 +468,7 @@ svg{display:block}
       <button class="inout in" id="vIn">IN<small id="vInT">--:--</small></button>
       <button class="inout out" id="vOut">OUT<small id="vOutT">--:--</small></button>
       <button class="vsave" id="vSave">＋ クリップ保存<small>タイトル・タグ・メモ</small></button>
+      <button class="vtrace" id="vTrace">🧪自動<br>トレース<small>β</small></button>
     </div>
     <div class="v-kf" id="vKf">
       <div class="kf-track" id="kfTrack"><div class="kf-cap" id="kfCap"></div><div class="kf-line"></div><div class="kf-head" id="kfHead"></div><div id="kfDots"></div></div>
@@ -370,9 +483,9 @@ svg{display:block}
   <main id="main">
     <header id="topbar">
       <div class="seg" id="modeSeg">
-        <button data-mode="court"><span class="lg">コートサイド</span><span class="sm">コート</span></button>
-        <button data-mode="mtg"><span class="lg">MTG分析</span><span class="sm">MTG</span></button>
-        <button data-mode="live"><span class="lg">ライブ遅延</span><span class="sm">遅延</span></button>
+        <button data-mode="court">🏀<span class="lg"> コートサイド</span><span class="sm"> 試合</span></button>
+        <button data-mode="mtg">🎬<span class="lg"> MTG分析</span><span class="sm"> MTG</span></button>
+        <button data-mode="live">📹<span class="lg"> ライブ遅延</span><span class="sm"> 遅延</span></button>
       </div>
       <button class="ibtn" id="btnSidebar" aria-label="プレー集">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M9 4v16"/></svg>
@@ -380,28 +493,26 @@ svg{display:block}
       <button class="cur" id="curPlay"></button>
       <button class="btn" id="btnOverwrite" hidden>上書き</button>
       <button class="btn primary" id="btnSaveTop">＋ 保存</button>
-      <button class="btn help-btn" id="btnHelp"><span class="lg">？ 使い方</span><span class="sm">？</span></button>
+      <button class="ibtn menu-btn" id="btnMenu" aria-label="メニュー">⚙️</button>
     </header>
     <div id="boardbar" class="scrollable">
       <div class="seg" id="viewSeg">
-        <button data-view="2d">2D<small>平面・編集</small></button>
-        <button data-view="3d">3D<small>立体・視点</small></button>
+        <button data-view="2d">▦ 2D平面</button>
+        <button data-view="3d">🧊 3D視点</button>
       </div>
       <div class="seg" id="courtSeg">
         <button data-court="full">フル</button>
         <button data-court="half">ハーフ</button>
       </div>
       <div id="camBar">
-        <button class="cam" data-cam="overview">俯瞰</button>
-        <button class="cam" data-cam="goal">ゴール裏</button>
+        <button class="cam" data-cam="overview">🎥 全体</button>
+        <button class="cam" data-cam="top">⬇ 真上</button>
+        <button class="cam" data-cam="goal">🏀 ゴール裏</button>
         <button class="cam eye" data-cam="eye" data-id="O1">👁1</button>
         <button class="cam eye" data-cam="eye" data-id="O2">👁2</button>
         <button class="cam eye" data-cam="eye" data-id="O3">👁3</button>
         <button class="cam eye" data-cam="eye" data-id="O4">👁4</button>
         <button class="cam eye" data-cam="eye" data-id="O5">👁5</button>
-        <span class="cam-sep"></span>
-        <button class="cam tog" id="btnAutoFace">自動正対 ON</button>
-        <button class="cam tog" id="btnVision">視野 OFF</button>
       </div>
     </div>
     <div id="boardWrap">
@@ -411,17 +522,23 @@ svg{display:block}
         <div class="v3hint" id="v3hint"></div>
       </div>
       <div id="toast"></div>
+      <div id="recBadge"><i></i>REC　<b id="recStep">Step 1</b><small>駒・ボールを動かすたびに自動記録</small></div>
     </div>
     <section id="live">
       <div class="lv-top scrollable">
         <button class="btn primary" id="lvStart">● カメラ開始</button>
         <button class="btn" id="lvFlip">⟲ カメラ切替</button>
         <button class="btn" id="lvMirror">⇋ 左右反転</button>
-        <button class="btn on" id="lvPipBtn">▣ リアルタイム小窓</button>
-        <span class="lv-lbl">遅延</span>
-        <div class="seg" id="lvDelay">
-          <button data-d="3">3秒</button><button data-d="5">5秒</button><button data-d="10">10秒</button><button data-d="15">15秒</button>
-        </div>
+        <button class="btn on" id="lvPipBtn">▣ 小窓</button>
+        <button class="btn" id="lvClear">🗑 録画データクリア</button>
+        <span class="lv-info" id="lvInfo"></span>
+      </div>
+      <div class="lv-delays scrollable">
+        <span class="lv-lbl">フォーム確認</span>
+        <div class="seg lv-dseg" id="lvDelayS"><button data-d="3">3秒</button><button data-d="5">5秒</button><button data-d="10">10秒</button><button data-d="30">30秒</button></div>
+        <span class="lv-lbl">振り返り</span>
+        <div class="seg lv-dseg" id="lvDelayL"><button data-d="300">5分</button><button data-d="900">15分</button><button data-d="1800">30分</button><button data-d="3600">60分</button><button data-d="5400">90分</button></div>
+        <span class="lv-custom"><input type="number" id="lvMin" min="1" max="180" inputmode="numeric" placeholder="分"><button class="btn" id="lvMinSet">分おくれ</button></span>
       </div>
       <div class="lv-stage" id="lvStage">
         <video class="lv-main" id="lvA" muted playsinline></video>
@@ -431,14 +548,35 @@ svg{display:block}
         <div class="lv-count" id="lvCount"></div>
         <div class="lv-freeze" id="lvFreeze"></div>
       </div>
+      <div class="lv-seek" id="lvSeekRow">
+        <button class="lv-jump" data-j="-60">−1分</button>
+        <button class="lv-jump" data-j="-10">−10秒</button>
+        <div class="lv-bar-wrap">
+          <input type="range" id="lvSeek" min="0" max="1000" step="1" value="1000" aria-label="追っかけ再生の位置">
+          <div class="lv-seek-lbl"><span id="lvOld">—</span><b id="lvNow"></b><span>LIVE</span></div>
+        </div>
+        <button class="lv-jump" data-j="10">+10秒</button>
+        <button class="lv-jump" data-j="60">+1分</button>
+        <button class="lv-jump lv-follow" id="lvFollow">⟲ 設定の<br>遅れに戻る</button>
+      </div>
       <div class="lv-bottom">
         <button class="lv-step" id="lvBack" disabled>◀ 0.5秒</button>
         <button class="lv-pause" id="lvPause">❚❚ 一時停止（フリーズ）</button>
         <button class="lv-step" id="lvFwd" disabled>0.5秒 ▶</button>
       </div>
     </section>
+    <div id="stepbar">
+      <div class="st-prog"><i id="stProgI"></i></div>
+      <button class="st-add" id="stAdd">● 動き記録<small id="stAddSub">駒を動かすと自動で記録</small></button>
+      <div class="st-chips scrollable" id="stChips"></div>
+      <button class="st-btn st-play" id="stPlay" aria-label="自動再生">▶ 再生</button>
+      <button class="st-btn" id="stRestart" aria-label="最初から">↻</button>
+      <div class="seg st-speed" id="stSpeed"><button data-r="0.5">0.5x</button><button data-r="1">1.0x</button><button data-r="1.5">1.5x</button></div>
+      <button class="st-btn" id="stMore" aria-label="ステップ管理">⋯</button>
+    </div>
+    <div id="quickbar" class="scrollable"></div>
     <div id="defbar">
-      <button class="dftoggle" id="btnDef">DF 表示<small>タップで非表示</small></button>
+      <button class="dftoggle" id="btnDef">守備 表示<small>タップで隠す</small></button>
       <button class="preset" data-preset="man">マンツーマン<small>MAN</small></button>
       <button class="preset" data-preset="z23">2-3 ゾーン<small>ZONE</small></button>
       <button class="preset" data-preset="z32">3-2 ゾーン<small>ZONE</small></button>
@@ -450,16 +588,13 @@ svg{display:block}
   <nav id="rail">
     <div id="toolBtns" style="display:flex;flex-direction:column;gap:5px"></div>
     <div class="rail-sep"></div>
-    <div class="swatches" id="swatches"></div>
+    <button class="tool" id="btnColor"><span class="color-dot" id="colorDot"></span>線の色</button>
     <div class="rail-sep"></div>
     <button class="tool" id="btnUndo">
       <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h9a6 6 0 010 12h-7"/><path d="M12.5 6L8.5 10l4 4"/></svg>1つ戻る
     </button>
     <button class="tool warn" id="btnClear">
       <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h16M11.5 8V5.5h5V8M8 8l1.2 15h9.6L20 8"/></svg>線を全消去
-    </button>
-    <button class="tool reset" id="btnReset">
-      <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22.5 14.5a8.5 8.5 0 11-2.6-6.6"/><path d="M21.5 4v5.5H16"/></svg>初期配置
     </button>
   </nav>
 </div>
@@ -572,7 +707,13 @@ function validBoard(b) {
     && b.pieces.every(p => typeof p.x === 'number' && typeof p.y === 'number');
 }
 function boardOf(st) {
-  return { pieces: clone(st.pieces), ball: clone(st.ball), drawings: clone(st.drawings), showDef: !!st.showDef, court: st.court === 'full' ? 'full' : 'half' };
+  return { pieces: clone(st.pieces), ball: clone(st.ball), drawings: clone(st.drawings), showDef: !!st.showDef, court: st.court === 'full' ? 'full' : 'half',
+    steps: normalizeSteps(st.steps) };
+}
+// セットプレーの一連の動き（Step 1 → 2 → 3 …）
+function normalizeSteps(arr) {
+  if (!Array.isArray(arr) || !arr.length) return [];
+  return normalizeKeys(arr.map((x, i) => Object.assign({}, x, { t: i }))).map(k => ({ pieces: k.pieces, ball: k.ball, showDef: k.showDef }));
 }
 
 function samplePlays() {
@@ -638,8 +779,10 @@ const settings = Object.assign({
   tool: 'move', lastLine: 'cut', cat: 'blob', sidebar: true, mode: 'court', autoFace: true, vision: false,
 }, lsGet(LS_SET) || {});
 if (!plays.some(p => p.cat === settings.cat) && plays.length) settings.cat = plays[0].cat;
+if (!settings.uxV8) { settings.uxV8 = true; settings.sidebar = false; }
 
 const history = [];
+const SEL = { id: null, lastTap: null, hintShown: 0 }; // タップで選んだ選手
 const active = new Map(); // pointerId -> 操作中情報
 
 /* =====================================================================
@@ -938,6 +1081,10 @@ function drawPieces(c, v, st, r, lifted) {
   for (const p of order) {
     const [sx, sy] = toS(v, p.x, p.y);
     const lift = lifted && lifted.has(p.id);
+    if (lifted && SEL.id === p.id) { // 選択中：黄色く光るリング
+      c.save(); c.shadowColor = '#facc15'; c.shadowBlur = r * 0.9;
+      c.beginPath(); c.arc(sx, sy, r * 1.42, 0, TAU); c.lineWidth = Math.max(3, r * 0.2); c.strokeStyle = '#facc15'; c.stroke(); c.restore();
+    }
     drawPiece(c, sx, sy, r * (lift ? 1.12 : 1), p, lift);
     if (!settings.autoFace && typeof p.face === 'number' && r >= 7) {
       // 3Dで設定した体の向きを2Dでも表示
@@ -1007,7 +1154,7 @@ function renderThumb(cv, board, w = 104, h = 74) {
 /* =====================================================================
    変更・履歴・保存
    ===================================================================== */
-function snapshot() { return JSON.stringify({ pieces: S.pieces, ball: S.ball, drawings: S.drawings, showDef: S.showDef, court: S.court, playId: S.playId, clipId: S.clipId || null }); }
+function snapshot() { return JSON.stringify({ pieces: S.pieces, ball: S.ball, drawings: S.drawings, showDef: S.showDef, court: S.court, playId: S.playId, clipId: S.clipId || null, steps: S.steps || [] }); }
 function pushHistory(snap) { history.push(snap || snapshot()); if (history.length > 80) history.shift(); updateUndo(); }
 let saveTimer = null;
 function saveCurrentSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(saveCurrentNow, 250); }
@@ -1018,12 +1165,12 @@ function savePlays() { return lsSet(LS_PLAYS, plays); }
 function commit() {
   if (!view || view.court !== S.court) layout(); else requestRender();
   saveCurrentSoon();
-  updateCourtSeg(); updateDefBtn(); updateUndo(); updateCurPlay();
+  updateCourtSeg(); updateDefBtn(); updateUndo(); updateCurPlay(); renderSteps();
 }
 function undo() {
   if (!history.length) { toast('これ以上戻れません'); return; }
   const s = JSON.parse(history.pop());
-  Object.assign(S, { clipId: null }, s);
+  Object.assign(S, { clipId: null, steps: [] }, s); pbStop();
   active.clear();
   commit(); renderList(); renderClips();
 }
@@ -1097,7 +1244,8 @@ canvas.addEventListener('pointerdown', e => {
 
   if (tool === 'move') {
     const hit = hitTest(sx, sy);
-    if (!hit) return;
+    if (!hit) { active.set(e.pointerId, { kind: 'courtTap', sx, sy, moved: false }); return; }
+    pbPause();
     for (const a of active.values()) {
       if ((hit.kind === 'ball' && a.kind === 'ball') || (hit.kind === 'piece' && a.kind === 'piece' && a.id === hit.p.id)) return;
     }
@@ -1145,6 +1293,7 @@ canvas.addEventListener('pointermove', e => {
     requestRender(); return;
   }
   const [sx, sy] = evPos(e);
+  if (a.kind === 'courtTap') { if (Math.hypot(sx - a.sx, sy - a.sy) > 10) a.moved = true; return; }
   if (a.kind === 'erase') { eraseAt(sx, sy, a); return; }
   if (!a.moved) {
     if (Math.hypot(sx - a.sx, sy - a.sy) < 3) return;
@@ -1173,6 +1322,13 @@ function endPointer(e, cancelled) {
     return;
   }
   if (a.kind === 'erase') return;
+  if (a.kind === 'courtTap') {
+    if (!cancelled && !a.moved) {
+      if (SEL.id) { const [cx, cy] = toC(view, a.sx, a.sy); faceToward(SEL.id, cx, cy); }
+    }
+    return;
+  }
+  if (a.kind === 'piece' && !a.moved && !cancelled) { handlePieceTap(a.id); requestRender(); return; }
   if (a.kind === 'ball' && a.moved) {
     // 選手の近くで離したらボールを持たせる
     const bp = ballScreen(view, S, R);
@@ -1185,7 +1341,7 @@ function endPointer(e, cancelled) {
     }
     if (best) S.ball.holder = best.id;
   }
-  if (a.moved) commit(); else requestRender();
+  if (a.moved) { commit(); recordStep(); } else requestRender();
 }
 canvas.addEventListener('pointerup', e => endPointer(e, false));
 canvas.addEventListener('pointercancel', e => endPointer(e, true));
@@ -1205,7 +1361,7 @@ document.addEventListener('dblclick', e => e.preventDefault());
 function setCourt(c) {
   if (S.court === c) return;
   S.court = c; commit();
-  if (T3.active && T3.renderer && T3.cam === 'overview') setCam('overview');
+  if (T3.active && T3.renderer && (T3.cam === 'overview' || T3.cam === 'top')) setCam(T3.cam);
 }
 function applyPreset(kind) {
   pushHistory();
@@ -1213,8 +1369,8 @@ function applyPreset(kind) {
   pos.forEach((p, i) => { const d = S.pieces.find(q => q.id === 'D' + (i + 1)); d.x = p[0]; d.y = p[1]; });
   S.showDef = true;
   if (kind === 'press') S.court = 'full';
-  commit();
-  toast(`DF：${PRESET_NAMES[kind]}に配置`);
+  commit(); recordStep();
+  toast(`守備：${PRESET_NAMES[kind]}に配置`);
 }
 function toggleDef() { pushHistory(); S.showDef = !S.showDef; commit(); }
 function clearDrawings() {
@@ -1224,7 +1380,7 @@ function clearDrawings() {
 function resetBoard() {
   pushHistory();
   const b = defaultBoard(S.court);
-  Object.assign(S, b, { playId: null, clipId: null });
+  Object.assign(S, b, { playId: null, clipId: null, steps: [] }); pbStop(true);
   commit(); renderList(); renderClips(); toast('初期配置に戻しました（↶で取り消し）');
 }
 
@@ -1235,7 +1391,8 @@ function getPlay(id) { return plays.find(p => p.id === id); }
 function loadPlay(id) {
   const p = getPlay(id); if (!p || !validBoard(p.board)) return;
   pushHistory();
-  Object.assign(S, clone(p.board), { playId: p.id, clipId: null });
+  Object.assign(S, { steps: [] }, clone(p.board), { playId: p.id, clipId: null }); pbStop(true); REC.on = false; SEL.id = null;
+  if (S.steps.length > 1) toast(`「${p.title}」：▶ でプレーを自動再生できます（${S.steps.length}ステップ）`);
   active.clear();
   app.classList.remove('pb-open');
   commit(); renderList(); renderClips();
@@ -1281,6 +1438,7 @@ function renderTabs() {
   }).join('');
 }
 function renderList() {
+  renderQuick();
   const el = $('#playList');
   const cat = catById(settings.cat);
   $('#listTitle').textContent = `${cat.name}（${plays.filter(p => p.cat === cat.id).length}）`;
@@ -1292,7 +1450,7 @@ function renderList() {
   el.innerHTML = items.map(p => `
     <div class="play-item ${S.playId === p.id ? 'loaded' : ''}" data-id="${esc(p.id)}" role="button">
       <canvas class="thumb"></canvas>
-      <div class="pi-body"><div class="pi-title">${esc(p.title)}</div><div class="pi-memo">${esc(p.memo || '')}</div></div>
+      <div class="pi-body"><div class="pi-title">${p.board && p.board.steps && p.board.steps.length > 1 ? '<span class="st-badge">▶' + p.board.steps.length + '</span>' : ''}${esc(p.title)}</div><div class="pi-memo">${esc(p.memo || '')}</div></div>
       <button class="pi-more" data-more="${esc(p.id)}" aria-label="メニュー">⋯</button>
     </div>`).join('');
   el.querySelectorAll('.play-item').forEach(it => {
@@ -1302,7 +1460,6 @@ function renderList() {
 }
 function renderTools() {
   $('#toolBtns').innerHTML = TOOLS.map(t => `<button class="tool" data-tool="${t.id}">${t.icon}${t.name}</button>`).join('');
-  $('#swatches').innerHTML = COLORS.map(c => `<button class="sw" data-color="${c}" style="background:${c}" aria-label="色"></button>`).join('');
   updateTools();
 }
 function updateTools() {
@@ -1310,13 +1467,13 @@ function updateTools() {
     b.classList.toggle('on', b.dataset.tool === settings.tool);
     b.classList.toggle('penline', settings.pencil && settings.tool === 'move' && b.dataset.tool === settings.lastLine);
   });
-  document.querySelectorAll('.sw').forEach(b => b.classList.toggle('on', b.dataset.color === settings.color));
+  const cd = $('#colorDot'); if (cd) cd.style.background = settings.color;
 }
 function updateCourtSeg() { document.querySelectorAll('#courtSeg button').forEach(b => b.classList.toggle('on', b.dataset.court === S.court)); }
 function updateDefBtn() {
   const b = $('#btnDef');
   b.classList.toggle('off', !S.showDef);
-  b.innerHTML = S.showDef ? 'DF 表示<small>タップで非表示</small>' : 'DF 非表示<small>タップで表示</small>';
+  b.innerHTML = S.showDef ? '守備 表示<small>タップで隠す</small>' : '守備 なし<small>タップで出す</small>';
 }
 function updateUndo() { $('#btnUndo').disabled = history.length === 0; }
 function updateCurPlay() {
@@ -1336,8 +1493,8 @@ function updateCurPlay() {
   }
   $('#btnOverwrite').hidden = !p;
 }
-function updateThemeBtn() { $('#btnTheme').textContent = settings.theme === 'wood' ? 'コート：木目' : 'コート：白'; }
-function updatePencilBtn() { const b = $('#btnPencil'); b.classList.toggle('on', settings.pencil); b.textContent = settings.pencil ? '✎ ペン優先 ON' : '✎ ペン優先 OFF'; }
+function updateThemeBtn() {}
+function updatePencilBtn() {}
 function updateSidebar() { app.classList.toggle('sb-off', !settings.sidebar); }
 
 /* =====================================================================
@@ -1360,93 +1517,91 @@ function openHelp() {
   openModal(`
     <div class="help-head">
       <h2>🏀 TACBOARD 使い方ガイド</h2>
-      <p>U15指導用のデジタル作戦盤です。画面上部のボタンで3つのモードを切り替えて使います。このガイドは右上の「？ 使い方」からいつでも開けます。</p>
+      <p>U15指導用のデジタル作戦盤です。画面上部のボタンで3つのモードを切り替えて使います。このガイドは右上の ⚙️ メニューからいつでも開けます。</p>
     </div>
     <div class="help-body">
       <div class="help-modes">
-        <div class="help-mode" style="border-color:#38bdf8"><b>① コートサイド</b><span>タイムアウト・練習用。作戦盤とセットプレー集を大きく表示。</span></div>
-        <div class="help-mode" style="border-color:#4ade80"><b>② MTG分析</b><span>左にYouTube動画とクリップ、右に作戦盤。ミーティング用。</span></div>
-        <div class="help-mode" style="border-color:#facc15"><b>③ ライブ遅延</b><span>iPadのカメラ映像を数秒遅れで再生。動きをその場で確認。</span></div>
+        <div class="help-mode" style="border-color:#38bdf8"><b>🏀 コートサイド</b><span>試合のタイムアウト・練習用。作戦盤と、下のカードからプレーを1タップで呼び出し。</span></div>
+        <div class="help-mode" style="border-color:#4ade80"><b>🎬 MTG分析</b><span>左にYouTube・iPad内の動画、右に作戦盤。動画に合わせて作戦盤が動く。</span></div>
+        <div class="help-mode" style="border-color:#facc15"><b>📹 ライブ遅延</b><span>iPadのカメラ映像を数秒遅れで再生。動きをその場で確認。</span></div>
       </div>
 
       <details open>
-        <summary>⏱ 60秒クイックスタート（タイムアウトで使う）</summary>
+        <summary>⏱ タイムアウトの60秒で使う</summary>
         <ol>
-          <li>左の<b>カテゴリー</b>（BLOB／SLOB など）をタップし、プレーを<b>タップで呼び出し</b>。</li>
-          <li>上部の<b>プレー名の欄をタップ</b>すると、ポイントメモが大きく表示されます。選手に見せるときに。</li>
-          <li>その場で修正したいときは、駒をドラッグ／右の<b>カット・パス</b>などで線を描き足し。</li>
-          <li>失敗したら右下の<b>↶ 1つ戻る</b>。描いた線だけ消すなら<b>線を全消去</b>。</li>
+          <li>画面下の<b>プレーのカード</b>を横にスワイプして選び、<b>1タップ</b>。盤面が出て、動きが記録されていれば<b>自動で再生</b>されます。</li>
+          <li>もう一度見せたいときは <b>↻</b>（最初から）か <b>▶ 再生</b>。速さは <b>0.5x／1.0x／1.5x</b>。</li>
+          <li>上のプレー名をタップすると、<b>ポイントのメモが大きく</b>表示されます。</li>
+          <li>まちがえたら右の <b>↶ 1つ戻る</b>。</li>
         </ol>
       </details>
 
       <details>
-        <summary>✏️ 作戦盤（2D）の操作</summary>
+        <summary>👆 指だけでできる操作（2D・3D共通）</summary>
         <ul>
-          <li><b>駒を移動</b>：青＝オフェンス1〜5、赤＝ディフェンスX1〜X5、オレンジ＝ボール。2本指で2つの駒を同時に動かせます。</li>
-          <li><b>ボールを持たせる</b>：ボールを選手の近くで離すと、その選手が持ち、一緒に動きます。</li>
-          <li><b>線の種類</b>：パス（破線）／ドリブル（波線）／カット（実線矢印）／スクリーン（T字）／フリー（自由線）。駒の上から描き始めると駒から線が出ます。</li>
-          <li><b>消しゴム</b>：消したい線をなぞると1本ずつ消えます。線の色は4色から選択。</li>
-          <li><b>DF配置</b>：下の「マンツーマン／2-3／3-2／1-2-1-1プレス」でディフェンスを一発配置。「DF表示」で表示／非表示。</li>
-          <li><b>Apple Pencil</b>：最初にペンを使うと「ペン＝線を描く／指＝駒を動かす」に自動で切り替わります（左下「ペン優先」で変更可）。</li>
+          <li><b>ドラッグ</b>：選手・ボールをつかんで動かす。3Dでもそのままつかめます（つかんでいる間はカメラは回りません）。</li>
+          <li><b>ダブルタップ</b>：オフェンス（1〜5）をトントンと2回タップ → 今ボールを持っている選手から<b>パス</b>が飛びます。</li>
+          <li><b>タップで選ぶ → コートをタップ</b>：選手が黄色く光ったら、向かせたい方向のコートをタップ。<b>その方向へ体の向き</b>が変わります（ディフェンスの構えの指導に）。もう一度選手をタップで選択解除。</li>
+          <li><b>ボールを選手の近くで離す</b>：その選手がボールを持ちます。</li>
+          <li><b>右のツール</b>：パス（破線）／ドリブル（波線）／カット（矢印）／スクリーン（T字）／フリー／消しゴム。「線の色」はタップで色が変わります。</li>
+          <li><b>下の守備ボタン</b>：マンツーマン／2-3／3-2／1-2-1-1プレスを一発配置。「守備 表示」で出す・隠す。</li>
         </ul>
       </details>
 
       <details>
-        <summary>📚 セットプレーの保存と呼び出し</summary>
-        <ul>
-          <li><b>＋ 保存</b>：今の盤面（駒の位置＋線）を、タイトル・カテゴリー・ポイントメモ付きで保存。</li>
-          <li><b>上書き</b>：呼び出したプレーを修正したら、上部の「上書き」で更新。</li>
-          <li>各プレーの<b>「⋯」</b>：編集・複製・並べ替え・削除。</li>
-          <li>☰ボタンで左のプレー集を隠すと、作戦盤を広く使えます。</li>
-        </ul>
-      </details>
-
-      <details>
-        <summary>🧊 3D表示と選手目線</summary>
-        <ul>
-          <li>作戦盤の上の<b>「3D 立体・視点」</b>で切り替え。2Dの駒・線・呼び出したプレーがそのまま立体で表示されます。</li>
-          <li><b>俯瞰</b>：1本指ドラッグで回転、ピンチでズーム、2本指で移動。</li>
-          <li><b>👁1〜👁5</b>：その選手の目の高さからの景色。ドラッグで見回せます。パスコース・死角・スペーシングの確認に。</li>
-          <li><b>ゴール裏</b>：リング上からペイント内のスペースとカットのコースを確認。</li>
-          <li><b>体の向き</b>：足元の光るリングの<b>矢印</b>が正面。「自動正対ON」ならオフェンスはボール（保持者はゴール）を、DFはボールとマークマンの間を自動で向きます。<b>選手をタップ</b>すると45°ずつ回せます（自動正対は自動でOFFに）。</li>
-          <li><b>視野ON</b>：各選手の前方120°を扇形で表示。扇の外側が<b>死角</b>です。</li>
-          <li>ボールを持つ（ボールが近い）選手は自動で<b>ドリブル姿勢</b>に。DFは低い構えで手を広げます。</li>
-          <li>駒の移動や線の描画は2Dで行います（右のツールを押すと自動で2Dに戻ります）。</li>
-        </ul>
-        <div class="note">3Dの初回表示にはインターネット接続が必要です。つながらない場合も2Dはそのまま使えます。</div>
-      </details>
-
-      <details>
-        <summary>🎬 MTG分析（YouTubeクリップ）</summary>
+        <summary>● 動きを記録してアニメーションにする</summary>
         <ol>
-          <li>上部の<b>「MTG分析」</b>を押し、左上にYouTubeのURL（限定公開OK）を貼って<b>「読込」</b>。</li>
-          <li>再生しながら場面の始まりで<b>IN</b>、終わりで<b>OUT</b>。−5秒／+5秒、0.5x〜1.0xのスローも使えます。</li>
-          <li>右の作戦盤で修正案を描いてから<b>「＋ クリップ保存」</b>。タイトル・タグ・メモを入力（「盤面も紐づける」は最初からON）。</li>
-          <li>MTGでは<b>クリップをタップ</b>するだけ。IN〜OUTがループ再生され、右の作戦盤に修正案が自動で出ます。</li>
-          <li><b>動画と作戦盤を連動させる（キーフレーム）</b>：動画を止めて駒とボールを置き<b>「＋この時間の盤面を記憶」</b>→ 数秒進めて止め、駒を動かしてもう一度記憶（2〜5コマ）。再生すると、スロー再生やシークバー移動にも合わせて<b>2D・3Dの選手とボールが自動で動きます</b>。紫の点（◆）をタップでその時間へ移動、もう一度タップで上書き／削除。「連動」ボタンでON/OFF。<br>※クリップ保存前に記憶したコマは、保存したときにそのクリップに入ります。保存済みのクリップに足すときは、そのクリップをタップしてから記憶してください。</li>
-        </ol>
-        <div class="note">動画が再生されない場合：YouTube側で「埋め込みを許可」をONに、公開範囲は「限定公開」にしてください。</div>
-      </details>
-
-      <details>
-        <summary>📹 ライブ遅延（練習の動き確認）</summary>
-        <ol>
-          <li>上部の<b>「ライブ遅延」</b>を押すと背面カメラが起動（初回はカメラの許可が必要）。</li>
-          <li><b>3秒／5秒／10秒／15秒</b>から遅延を選択。カウントダウン後、遅れた映像が流れ続けます。</li>
-          <li>選手が見に来たら<b>画面をタップ</b>または<b>「一時停止」</b>でフリーズ。0.5秒ずつコマ送りして説明し、<b>「再開」</b>で元に戻ります。</li>
-          <li>iPadは三脚やスタンドで固定するのがおすすめ。映像は端末内にもどこにも保存されません。</li>
+          <li>スタートの配置にして、下の <b>「● 動き記録」</b> を押す（赤い REC 表示が出ます）。</li>
+          <li>あとは<b>駒やボールを動かすだけ</b>。動かすたびに Step 2, 3… と自動で記録されます。ダブルタップのパスも記録されます。<br>※続けてすばやく動かした駒は、同じステップ（同時の動き）にまとまります。</li>
+          <li>終わったら <b>「■ 記録停止」</b> → <b>「▶ 再生」</b>で確認。</li>
+          <li>「＋ 保存」でプレーとして保存すると、下のカードから1タップで再生できます。</li>
+          <li>ステップ番号をタップでその場面へ、もう一度タップで上書き／挿入／削除。</li>
         </ol>
       </details>
 
       <details>
-        <summary>💾 データの保存・他のコーチとの共有</summary>
+        <summary>🧊 3D視点で見る</summary>
         <ul>
-          <li>盤面・プレー・クリップは<b>このiPadのSafariに自動保存</b>されます（Wi-Fiなしでも消えません）。</li>
-          <li>左下<b>「⇪ 書き出し」</b>で、プレーとクリップをまとめて1つのファイルに。AirDropで他のコーチのiPadへ送れます。</li>
-          <li>受け取った側は<b>「⇩ 読み込み」</b>→「追加」で今のデータに統合、「置き換え」で丸ごと入れ替え。</li>
-          <li>Safariの「履歴とWebサイトデータを消去」をするとデータも消えるので、定期的に書き出してバックアップを。</li>
+          <li>作戦盤の上の <b>「🧊 3D視点」</b> で切り替え。2Dの配置・線・動きがそのまま立体になります。</li>
+          <li><b>🎥 全体</b>（斜め上）・<b>⬇ 真上</b>：画面の大きさに合わせて、コートの四隅まで自動で1画面に収まります。空いている所をドラッグで回転、ピンチで拡大・縮小（大きく引くこともできます）。<b>🏀 ゴール裏</b>：リングの上から。</li>
+          <li><b>👁1〜👁5</b>：その選手の目の高さからの景色。ドラッグで見回せます。</li>
+          <li>足元の矢印が体の正面。⚙️メニューで「体の向き：自動／手動」「視野の扇（死角）」を切り替えられます。</li>
         </ul>
-        <div class="note">カメラとYouTube再生は、このページを https:// のURL（チームのWebページなど）で開いたときに動作します。</div>
+        <div class="note">3Dの初回表示にはインターネット接続が必要です。つながらなくても2Dはそのまま使えます。</div>
+      </details>
+
+      <details>
+        <summary>🎬 MTG分析（動画と作戦盤）</summary>
+        <ol>
+          <li>上の <b>「🎬 MTG分析」</b> → 左上にYouTubeのURL（限定公開OK）を貼って「読込」。iPad内の動画は <b>📁</b>。</li>
+          <li>再生しながら場面の始まりで <b>IN</b>、終わりで <b>OUT</b> →「＋ クリップ保存」。</li>
+          <li><b>いちばん簡単な連動</b>：保存画面の「同時シンクロ再生するセットプレー」で、動きを記録したプレーを選ぶだけ。動画の再生・停止・スロー・ループに合わせて作戦盤が動きます。</li>
+          <li>細かく合わせたいときは、動画を止めて駒を置き「＋この時間の盤面を記憶」を数回（紫の点）。</li>
+          <li>MTGでは<b>クリップをタップ</b>するだけ。区間がくり返し再生され、作戦盤も一緒に動きます。</li>
+          <li>iPad内の動画なら「🧪自動トレース」（実験機能）でボールと動きの重心を自動で線にできます。</li>
+        </ol>
+        <div class="note">YouTubeが再生されないとき：動画の「埋め込みを許可」をONに、公開範囲は「限定公開」に。</div>
+      </details>
+
+      <details>
+        <summary>📹 ライブ遅延（フォーム確認〜試合の振り返り）</summary>
+        <ol>
+          <li>上の <b>「📹 ライブ遅延」</b> → カメラが起動（初回は許可が必要）。三脚やスタンドで固定がおすすめ。</li>
+          <li><b>フォーム確認</b>：3秒／5秒／10秒／30秒。プレーしてすぐ画面を見に来れば、自分の動きが見られます。</li>
+          <li><b>振り返り</b>：5分／15分／30分／60分／90分（数字を入れて「分おくれ」で好きな分数も）。練習試合や紅白戦を流しながら、指定した時間おくれで<b>追っかけ再生</b>します。</li>
+          <li>下の<b>黄色いバーを指でスライド</b>すると「10分前のプレー」「45分前のプレー」へ自由に巻き戻し・早送り。−1分／−10秒／+10秒／+1分でも移動できます。「設定の遅れに戻る」で元の追っかけ再生へ。</li>
+          <li>選手が見に来たら<b>画面をタップ</b>でフリーズ → 0.5秒ずつコマ送りで説明 → もう一度タップで再開。</li>
+        </ol>
+        <div class="note">録画はiPadの中（ブラウザの保存領域）に少しずつ保存され、外には送られません。古い映像は自動で消えます（遅れの時間＋10分を残す）。60分で約0.6GBが目安。「🗑 録画データクリア」でいつでも空き容量を戻せます。カメラを止めても、録画済みの範囲はバーで見返せます。</div>
+      </details>
+
+      <details>
+        <summary>⚙️ 保存・共有・設定</summary>
+        <ul>
+          <li>盤面・プレー・クリップは<b>このiPadに自動保存</b>されます（Wi-Fiなしでも消えません）。</li>
+          <li>右上の <b>⚙️ メニュー</b>：データの書き出し（AirDropで他のコーチへ）／読み込み、コートの色、体の向き、視野、Apple Pencil、初期配置に戻す、このガイド。</li>
+          <li>Safariの「履歴とWebサイトデータを消去」でデータも消えるので、ときどき書き出してバックアップを。</li>
+        </ul>
       </details>
     </div>
     <div class="help-foot">
@@ -1683,8 +1838,9 @@ function getClip(id) { return clips.find(c => c.id === id); }
 function getVideo(id) { return V.videos.find(v => v.id === id); }
 function videoLabel(id) { const v = getVideo(id); return (v && v.title) || ('動画 ' + id); }
 
+const VID_RE = /^([\w-]{11}|local:.{1,100})$/;
 function normalizeClips(arr) {
-  return arr.filter(c => c && /^[\w-]{11}$/.test(c.videoId) && isFinite(c.in) && isFinite(c.out) && +c.out > +c.in).map(c => ({
+  return arr.filter(c => c && VID_RE.test(c.videoId) && isFinite(c.in) && isFinite(c.out) && +c.out > +c.in).map(c => ({
     id: String(c.id || uid()),
     videoId: c.videoId,
     title: String(c.title || '無題のクリップ').slice(0, 60),
@@ -1693,12 +1849,14 @@ function normalizeClips(arr) {
     in: r1(+c.in), out: r1(+c.out),
     board: validBoard(c.board) ? boardOf(Object.assign({}, c.board)) : null,
     keys: normalizeKeys(c.keys),
+    playId: typeof c.playId === 'string' ? c.playId : null,
     createdAt: +c.createdAt || Date.now(), updatedAt: +c.updatedAt || Date.now(),
   }));
 }
 function normalizeVideos(arr) {
-  return arr.filter(v => v && /^[\w-]{11}$/.test(v.id)).map(v => ({
-    id: v.id, url: String(v.url || 'https://youtu.be/' + v.id), title: String(v.title || '').slice(0, 120), addedAt: +v.addedAt || Date.now(),
+  return arr.filter(v => v && VID_RE.test(v.id)).map(v => ({
+    id: v.id, url: v.id.startsWith('local:') ? '' : String(v.url || 'https://youtu.be/' + v.id), title: String(v.title || '').slice(0, 120), addedAt: +v.addedAt || Date.now(),
+    local: v.id.startsWith('local:') || undefined,
   }));
 }
 function afterDataChange() { renderTabs(); renderList(); renderClips(); updateCurPlay(); }
@@ -1724,6 +1882,7 @@ function ensureYT() {
 function setEmpty(html) { const el = $('#vEmpty'); if (html) { el.innerHTML = html; el.style.display = 'flex'; } else el.style.display = 'none'; }
 
 async function openVideo(id, start = 0, autoplay = false) {
+  if (player && player.isLocal) deactivateLocal();
   playerVideo = id;
   if (!player) setEmpty('<b>読み込み中…</b>');
   try { await ensureYT(); }
@@ -1877,6 +2036,7 @@ function loadFromInput() {
 }
 function switchVideo(id, start = 0, autoplay = false) {
   const v = getVideo(id); if (!v) return;
+  if (v.local || id.startsWith('local:')) { openLocalById(id, start, autoplay); return; }
   if (V.cur !== id) { V.inT = V.outT = null; V.pendingKeys = []; const ec = V.editClipId && getClip(V.editClipId); if (ec && ec.videoId !== id) V.editClipId = null; updateInOut(); }
   V.cur = id; saveV();
   $('#vUrl').value = v.url;
@@ -1917,6 +2077,10 @@ function clipForm(o, onOk) {
     : o.boardMode === 'edit-has'
       ? `<label>紐づけた盤面</label><select id="cBoardSel"><option value="keep">そのまま残す</option><option value="replace">現在の作戦盤の盤面で上書きする</option><option value="remove">盤面の紐づけを解除する</option></select>`
       : `<label class="check"><input type="checkbox" id="cBoard">現在の作戦盤の盤面をこのクリップに紐づける</label>`;
+  const animPlays = plays.filter(p => p.board && p.board.steps && p.board.steps.length > 1);
+  const linkUI = `<label>動画と同時シンクロ再生するセットプレー（任意）</label>
+    <select id="cPlay"><option value="">なし</option>${animPlays.map(p => `<option value="${esc(p.id)}" ${o.playId === p.id ? 'selected' : ''}>${esc(catById(p.cat).short)}｜${esc(p.title)}（${p.board.steps.length}ステップ）</option>`).join('')}</select>
+    <p class="msub" style="font-size:12px;margin-top:4px">${animPlays.length ? '選ぶと、動画のIN〜OUTに合わせてそのプレーのアニメーションが自動で同時再生されます（手動キーフレームがあればそちらが優先）。' : 'ステップを記録したセットプレーを保存すると、ここで選べるようになります。'}</p>`;
   openModal(`
     <h2>${o.heading}</h2>
     <label>タイトル</label>
@@ -1931,6 +2095,7 @@ function clipForm(o, onOk) {
     <label>コーチの分析メモ</label>
     <textarea id="cMemo" rows="4" maxlength="1000" placeholder="例）X3のヘルプが遅い。ボールサイドのウイングはもう半歩ディナイ。">${esc(o.memo)}</textarea>
     ${boardUI}
+    ${linkUI}
     <div class="mactions"><button class="btn" data-x="cancel">キャンセル</button><button class="btn primary" data-x="ok">${o.okLabel}</button></div>
   `, el => {
     const sel = new Set(o.tags.filter(t => TAG_PRESETS.some(p => p.n === t)));
@@ -1947,7 +2112,7 @@ function clipForm(o, onOk) {
       const cb = el.querySelector('#cBoard'), bs = el.querySelector('#cBoardSel');
       if (cb) board = cb.checked ? 'replace' : (o.boardMode === 'new' ? 'remove' : 'keep');
       if (bs) board = bs.value;
-      onOk({ title: el.querySelector('#cTitle').value.trim() || '無題のクリップ', tin, tout, tags, memo: el.querySelector('#cMemo').value.trim(), board });
+      onOk({ title: el.querySelector('#cTitle').value.trim() || '無題のクリップ', tin, tout, tags, memo: el.querySelector('#cMemo').value.trim(), board, playId: el.querySelector('#cPlay').value || null });
       closeModal();
     });
   });
@@ -1962,11 +2127,11 @@ function openClipSave() {
   }
   try { player.pauseVideo(); } catch (_) {}
   const n = clips.filter(c => c.videoId === V.cur).length + 1;
-  clipForm({ heading: 'ビデオクリップを保存', title: `クリップ ${n}`, tin, tout, tags: V.tag !== 'all' ? [V.tag] : [], memo: '', boardMode: 'new', okLabel: '保存' }, f => {
+  clipForm({ heading: 'ビデオクリップを保存', title: `クリップ ${n}`, tin, tout, tags: V.tag !== 'all' ? [V.tag] : [], memo: '', boardMode: 'new', okLabel: '保存', playId: S.playId && S.steps && S.steps.length > 1 ? S.playId : null }, f => {
     const now = Date.now();
     const keys = V.pendingKeys.filter(k => k.t >= f.tin - 0.3 && k.t <= f.tout + 0.3);
     const c = { id: uid(), videoId: V.cur, title: f.title, tags: f.tags, memo: f.memo, in: f.tin, out: f.tout,
-      board: f.board === 'replace' ? boardOf(S) : null, keys, createdAt: now, updatedAt: now };
+      board: f.board === 'replace' ? boardOf(S) : null, keys, playId: f.playId, createdAt: now, updatedAt: now };
     clips.push(c);
     if (!saveClips()) { clips.pop(); return; }
     if (c.board) { S.playId = null; S.clipId = c.id; saveCurrentSoon(); updateCurPlay(); }
@@ -1977,8 +2142,8 @@ function openClipSave() {
 }
 function openClipEdit(id) {
   const c = getClip(id); if (!c) return;
-  clipForm({ heading: 'クリップを編集', title: c.title, tin: c.in, tout: c.out, tags: c.tags, memo: c.memo, boardMode: c.board ? 'edit-has' : 'edit-none', okLabel: '更新' }, f => {
-    Object.assign(c, { title: f.title, in: f.tin, out: f.tout, tags: f.tags, memo: f.memo, updatedAt: Date.now() });
+  clipForm({ heading: 'クリップを編集', title: c.title, tin: c.in, tout: c.out, tags: c.tags, memo: c.memo, boardMode: c.board ? 'edit-has' : 'edit-none', okLabel: '更新', playId: c.playId || null }, f => {
+    Object.assign(c, { title: f.title, in: f.tin, out: f.tout, tags: f.tags, memo: f.memo, playId: f.playId, updatedAt: Date.now() }); SY.lastApplied = null;
     if (f.board === 'replace') c.board = boardOf(S);
     if (f.board === 'remove') { c.board = null; if (S.clipId === c.id) S.clipId = null; }
     saveClips(); renderClips(); updateCurPlay(); toast('クリップを更新しました');
@@ -1998,9 +2163,11 @@ function deleteClip(id) {
   renderClips(); updateCurPlay(); toast('クリップを削除しました');
 }
 function loadClipBoard(c) {
-  if (!c.board || !validBoard(c.board)) return false;
-  pushHistory();
-  Object.assign(S, clone(c.board), { playId: null, clipId: c.id });
+  const lp = !c.board && c.playId ? getPlay(c.playId) : null;
+  const bd = c.board || (lp && lp.board);
+  if (!bd || !validBoard(bd)) return false;
+  pushHistory(); pbStop(true);
+  Object.assign(S, { steps: [] }, clone(bd), { playId: lp ? lp.id : null, clipId: lp ? null : c.id });
   active.clear(); commit(); renderList();
   return true;
 }
@@ -2076,7 +2243,16 @@ function normalizeKeys(arr) {
 // キーフレームを記憶する対象：選択中のクリップ or 作成中（IN設定済み）の新規クリップ
 function kfTarget() {
   const c = V.editClipId && getClip(V.editClipId);
-  if (c && c.videoId === V.cur) { if (!Array.isArray(c.keys)) c.keys = []; return { type: 'clip', clip: c, in: c.in, out: c.out, keys: c.keys }; }
+  if (c && c.videoId === V.cur) {
+    if (!Array.isArray(c.keys)) c.keys = [];
+    const lp = !c.keys.length && c.playId ? getPlay(c.playId) : null;
+    if (lp && lp.board.steps && lp.board.steps.length > 1) {
+      // 紐づけたセットプレーのステップを、クリップのIN〜OUTに等間隔で割り付けて同時再生
+      const st = lp.board.steps, d = (c.out - c.in) / (st.length - 1);
+      return { type: 'clip', clip: c, in: c.in, out: c.out, derived: lp, keys: st.map((x, i) => Object.assign({ t: c.in + d * i }, x)) };
+    }
+    return { type: 'clip', clip: c, in: c.in, out: c.out, keys: c.keys };
+  }
   if (V.cur && V.inT != null) return { type: 'new', in: V.inT, out: V.outT, keys: V.pendingKeys };
   return null;
 }
@@ -2095,10 +2271,11 @@ function renderKF() {
     dots.innerHTML = ''; $('#kfHead').style.display = 'none'; return;
   }
   const [a, b] = kfRange(tg);
-  cap.innerHTML = `◆ <b>${tg.type === 'clip' ? esc(tg.clip.title) : '新規クリップ（保存前）'}</b>　${tg.keys.length}コマ　${fmt(a)}〜${tg.out != null ? fmt(b) : '…'}`;
+  if (tg.derived) cap.innerHTML = `▶ <b>${esc(tg.clip.title)}</b> × セットプレー「${esc(tg.derived.title)}」同時シンクロ（${tg.keys.length}ステップ）`;
+  else cap.innerHTML = `◆ <b>${tg.type === 'clip' ? esc(tg.clip.title) : '新規クリップ（保存前）'}</b>　${tg.keys.length}コマ　${fmt(a)}〜${tg.out != null ? fmt(b) : '…'}`;
   dots.innerHTML = tg.keys.map((k, i) => {
     const u = clamp((k.t - a) / (b - a), 0, 1);
-    return `<button class="kf-dot ${i === kfSel ? 'sel' : ''}" data-k="${i}" style="left:calc(16px + (100% - 32px) * ${u.toFixed(4)})">${i + 1}</button>`;
+    return `<button class="kf-dot ${i === kfSel ? 'sel' : ''}" data-k="${i}" style="left:calc(16px + (100% - 32px) * ${u.toFixed(4)})"><span>${i + 1}</span></button>`;
   }).join('');
   updateKFHead(curT());
 }
@@ -2118,7 +2295,8 @@ function snapKey(t) {
   };
 }
 function addKeyframe() {
-  const tg = kfTarget();
+  let tg = kfTarget();
+  if (tg && tg.derived) { toast('手動キーフレームを打つと、セットプレー連動より優先されます'); tg = Object.assign({}, tg, { keys: tg.clip.keys, derived: null }); }
   if (!tg) { toast('クリップをタップするか、INを設定してから記憶してください'); return; }
   if (!ytOK()) { toast('先に動画を読み込んでください'); return; }
   const t = r1(curT());
@@ -2137,6 +2315,10 @@ function addKeyframe() {
 function kfDotTap(i) {
   const tg = kfTarget(); if (!tg || !tg.keys[i]) return;
   const k = tg.keys[i];
+  if (tg.derived) { // セットプレー連動のステップ：移動だけ
+    if (ytOK()) { try { player.pauseVideo(); player.seekTo(k.t, true); } catch (_) {} }
+    SY.lastApplied = null; return;
+  }
   if (kfSel === i) {
     openModal(`<h2>コマ${i + 1}（${fmt(k.t)}）</h2>
       <div class="alist">
@@ -2204,7 +2386,7 @@ function applyInterp(keys, t) {
 // 毎フレーム：再生時間を監視して盤面を動かす（通常・スロー・シークすべて対応）
 function syncFrame() {
   requestAnimationFrame(syncFrame);
-  if (settings.mode !== 'mtg' || !V.sync || !ytOK() || active.size) return;
+  if (settings.mode !== 'mtg' || !V.sync || !ytOK() || active.size || PB.playing || T3.dragId) return;
   const tg = kfTarget(); if (!tg || !tg.keys.length) return;
   let raw, st = -1;
   try { raw = player.getCurrentTime() || 0; st = player.getPlayerState(); } catch (_) { return; }
@@ -2258,7 +2440,7 @@ function renderClips() {
       <div class="ci-body">
         <div class="ci-top"><span class="ci-time">${fmt(c.in)}〜${fmt(c.out)}</span><span class="ci-title">${esc(c.title)}</span></div>
         ${V.scope === 'all' ? `<div class="ci-sub">📼 ${esc(videoLabel(c.videoId))}</div>` : ''}
-        <div class="ci-tags">${c.tags.map(t => `<span class="tag" style="--c:${tagColor(t)}">${esc(t)}</span>`).join('')}${c.board ? '<span class="tag board">▦ 盤面</span>' : ''}${c.keys && c.keys.length ? `<span class="tag kf">◆ ${c.keys.length}コマ連動</span>` : ''}</div>
+        <div class="ci-tags">${c.tags.map(t => `<span class="tag" style="--c:${tagColor(t)}">${esc(t)}</span>`).join('')}${c.board ? '<span class="tag board">▦ 盤面</span>' : ''}${c.keys && c.keys.length ? `<span class="tag kf">◆ ${c.keys.length}コマ連動</span>` : ''}${c.playId && getPlay(c.playId) ? `<span class="tag link">▶ ${esc(getPlay(c.playId).title)}</span>` : ''}</div>
         ${c.memo ? `<div class="ci-memo">${esc(c.memo)}</div>` : ''}
       </div>
       <button class="ci-more" data-cmore="${esc(c.id)}" aria-label="メニュー">⋯</button>
@@ -2282,7 +2464,11 @@ function setMode(m) {
   document.querySelectorAll('#modeSeg button').forEach(b => b.classList.toggle('on', b.dataset.mode === settings.mode));
   if (settings.mode === 'mtg') {
     renderClips(); updateInOut(); updateRateUI();
-    if (V.cur && !player) { const v = getVideo(V.cur); if (v) $('#vUrl').value = v.url; openVideo(V.cur, 0, false); }
+    if (V.cur && !player) {
+      const v = getVideo(V.cur);
+      if (V.cur.startsWith('local:')) setEmpty(`<b>📁 ${esc(V.cur.slice(6))}</b>端末内の動画は、開き直すたびに右上の「📁」から選び直してください。`);
+      else { if (v) $('#vUrl').value = v.url; openVideo(V.cur, 0, false); }
+    }
   } else if (ytOK()) {
     try { if (player.getPlayerState() === 1) player.pauseVideo(); } catch (_) {}
   }
@@ -2368,8 +2554,8 @@ function init3D() {
   $('#view3d').insertBefore(r.domElement, $('#v3load'));
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b1016);
-  scene.fog = new THREE.Fog(0x0b1016, 45, 90);
-  const cam = new THREE.PerspectiveCamera(50, 1, 0.05, 200);
+  scene.fog = new THREE.Fog(0x0b1016, 110, 320);
+  const cam = new THREE.PerspectiveCamera(50, 1, 0.05, 500);
   r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
   scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3f4a, 0.8));
   const dl = new THREE.DirectionalLight(0xffffff, 0.62); dl.position.set(-6, 20, 10);
@@ -2378,7 +2564,7 @@ function init3D() {
   scene.add(dl);
   const rim = new THREE.DirectionalLight(0x9cc8ff, 0.28); rim.position.set(8, 6, -14); scene.add(rim);
 
-  const arena = new THREE.Mesh(new THREE.PlaneGeometry(90, 64), new THREE.MeshStandardMaterial({ color: 0x1b2129, roughness: 1 }));
+  const arena = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x1b2129, roughness: 1 }));
   arena.rotation.x = -Math.PI / 2; arena.position.y = -0.01; arena.receiveShadow = true; scene.add(arena);
   T3.courtMat = new THREE.MeshStandardMaterial({ roughness: 0.55, metalness: 0 });
   const court = new THREE.Mesh(new THREE.PlaneGeometry(31, 18), T3.courtMat);
@@ -2395,8 +2581,9 @@ function init3D() {
 
   const ctl = new THREE.OrbitControls(cam, r.domElement);
   ctl.enableDamping = true; ctl.dampingFactor = 0.12;
-  ctl.maxPolarAngle = Math.PI * 0.495; ctl.minDistance = 2; ctl.maxDistance = 55;
+  ctl.maxPolarAngle = Math.PI * 0.495; ctl.minDistance = 2; ctl.maxDistance = 160; // ピンチで大きく引ける
   T3.controls = ctl;
+  ctl.addEventListener('start', () => { T3.userMoved = true; });
 
   // 選手目線：ドラッグで見回す
   let drag = null;
@@ -2415,29 +2602,79 @@ function init3D() {
   r.domElement.addEventListener('pointerup', endDrag);
   r.domElement.addEventListener('pointercancel', endDrag);
 
-  // 選手をタップ → 向きを45°ずつ回転
-  let tap = null;
-  r.domElement.addEventListener('pointerdown', e => {
-    if (T3.cam === 'eye') return;
-    tap = tap ? null : { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() };
-  });
-  r.domElement.addEventListener('pointerup', e => {
-    if (!tap || tap.id !== e.pointerId) { tap = null; return; }
-    const ok = Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 8 && performance.now() - tap.t < 400;
-    tap = null;
-    if (ok) pick3D(e);
-  });
-  r.domElement.addEventListener('pointercancel', () => { tap = null; });
+  // 3D上で選手・ボールを直接ドラッグ（床面 Y=0 に沿って移動）／タップで向きを45°回転
+  // 親要素のキャプチャ段階で受け取り、掴んだときはカメラ操作（OrbitControls）に渡さない
+  const host = $('#view3d');
+  const floor = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const rc = new THREE.Raycaster();
+  const ndcOf = e => { const b = r.domElement.getBoundingClientRect(); return new THREE.Vector2(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1); };
+  const floorAt = e => { rc.setFromCamera(ndcOf(e), T3.camera); const v = new THREE.Vector3(); return rc.ray.intersectPlane(floor, v) ? v : null; };
+  let g3 = null, extraPointers = 0, ftap = null;
+  host.addEventListener('pointerdown', e => {
+    if (T3.cam === 'eye' || e.target !== r.domElement) return;
+    if (g3) { extraPointers++; return; }
+    const hit = pick3D(e);
+    if (!hit) { ftap = ftap ? null : { id: e.pointerId, x: e.clientX, y: e.clientY }; return; } // カメラ操作はそのまま
+    ftap = null;
+    e.stopPropagation(); e.preventDefault();
+    ctl.enabled = false;
+    const f = floorAt(e), bc = ballCourt();
+    const p = hit.kind === 'piece' ? S.pieces.find(q => q.id === hit.id) : null;
+    const cx = p ? p.x : bc.x, cy = p ? p.y : bc.y;
+    g3 = { id: e.pointerId, hit, sx: e.clientX, sy: e.clientY, moved: false, snap: snapshot(),
+      offX: f ? cx - (f.x + 14) : 0, offY: f ? cy - (f.z + 7.5) : 0 };
+    try { host.setPointerCapture(e.pointerId); } catch (_) {}
+  }, { capture: true });
+  host.addEventListener('pointermove', e => {
+    if (!g3 || e.pointerId !== g3.id) return;
+    e.stopPropagation();
+    if (!g3.moved) {
+      if (Math.hypot(e.clientX - g3.sx, e.clientY - g3.sy) < 6) return;
+      g3.moved = true; pushHistory(g3.snap); pbPause();
+      T3.dragId = g3.hit.kind === 'piece' ? g3.hit.id : 'BALL';
+    }
+    const f = floorAt(e); if (!f) return;
+    const [x, y] = clampC({ court: 'full' }, f.x + 14 + g3.offX, f.z + 7.5 + g3.offY);
+    if (g3.hit.kind === 'piece') { const p = S.pieces.find(q => q.id === g3.hit.id); p.x = x; p.y = y; }
+    else { S.ball.holder = null; S.ball.x = x; S.ball.y = y; }
+    requestRender(); // 2D作戦盤にもリアルタイム反映
+  }, { capture: true });
+  const end3 = e => {
+    if (!g3 || e.pointerId !== g3.id) {
+      if (extraPointers) extraPointers--;
+      if (ftap && ftap.id === e.pointerId) {
+        const ok = e.type === 'pointerup' && Math.hypot(e.clientX - ftap.x, e.clientY - ftap.y) < 8; ftap = null;
+        if (ok && SEL.id) { const f = floorAt(e); if (f) faceToward(SEL.id, f.x + 14, f.z + 7.5); }
+      }
+      return;
+    }
+    e.stopPropagation();
+    const st = g3; g3 = null; extraPointers = 0; T3.dragId = null;
+    ctl.enabled = T3.cam !== 'eye';
+    try { host.releasePointerCapture(e.pointerId); } catch (_) {}
+    if (!st.moved) { if (st.hit.kind === 'piece' && e.type === 'pointerup') { handlePieceTap(st.hit.id); requestRender(); } return; }
+    if (st.hit.kind === 'ball') {
+      let best = null, bd = 0.75;
+      for (const p of S.pieces) { if (p.team !== 'o') continue; const d = Math.hypot(p.x - S.ball.x, p.y - S.ball.y); if (d < bd) { bd = d; best = p; } }
+      if (best) S.ball.holder = best.id;
+    }
+    commit(); recordStep();
+  };
+  host.addEventListener('pointerup', end3, { capture: true });
+  host.addEventListener('pointercancel', end3, { capture: true });
 }
+// タップ位置の選手 or ボールを返す（ボールは小さいので当たり判定を広めに）
 function pick3D(e) {
   const el = T3.renderer.domElement, rect = el.getBoundingClientRect();
   const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
   const rc = new THREE.Raycaster(); rc.setFromCamera(ndc, T3.camera);
+  if (T3.ball && T3.ball.visible && rc.ray.distanceToPoint(T3.ball.position) < 0.45) return { kind: 'ball' };
   const roots = Object.values(T3.avatars).filter(a => a.visible);
   for (const h of rc.intersectObjects(roots, true)) {
     let o = h.object; while (o && !(o.userData && o.userData.pid && o.userData.J)) o = o.parent;
-    if (o) { rotatePiece(o.userData.pid); return; }
+    if (o) return { kind: 'piece', id: o.userData.pid };
   }
+  return null;
 }
 function rotatePiece(id) {
   const p = S.pieces.find(q => q.id === id), a = T3.avatars[id]; if (!p || !a) return;
@@ -2716,6 +2953,9 @@ function makeAvatar(p) {
   const gizmo = new THREE.Group(); gizmo.add(ring, halo, arrow, fan); body.add(gizmo);
   for (const m of [ring, halo, arrow, fan]) m.raycast = () => {};
 
+  // 見た目よりひと回り大きい透明の当たり判定（指でつかみやすく）
+  const hitbox = new THREE.Mesh(gcache('hitbox', () => new THREE.CylinderGeometry(0.58, 0.58, 2.25, 12)), new THREE.MeshBasicMaterial({ visible: false }));
+  hitbox.position.y = 1.12; root.add(hitbox);
   const badge = new THREE.Sprite(new THREE.SpriteMaterial({ map: badgeTexture(off, p.label, POS_NAMES[idx]), depthTest: false, transparent: true }));
   badge.scale.set(0.74, 0.35, 1); badge.position.y = 2.02; badge.renderOrder = 10; root.add(badge);
 
@@ -2787,6 +3027,7 @@ function animatePlayers(dt, t) {
     const tx = wx(p.x), tz = wz(p.y);
     const self = T3.cam === 'eye' && T3.eyeId === p.id;
     if (ud.first) { a.position.set(tx, 0, tz); const y0 = targetYaw(p, drib); ud.yaw = y0 == null ? (p.team === 'o' ? Math.PI / 2 : -Math.PI / 2) : y0; ud.first = false; }
+    else if (T3.dragId === p.id) a.position.set(tx, 0, tz); // ドラッグ中は指に追従
     else { a.position.x += (tx - a.position.x) * kp; a.position.z += (tz - a.position.z) * kp; }
     if (self) ud.yaw = Math.atan2(Math.cos(T3.yaw), Math.sin(T3.yaw));
     else { const ty = targetYaw(p, drib); if (ty != null) ud.yaw = lerpAngle(ud.yaw, ty, ky); }
@@ -2801,8 +3042,11 @@ function animatePlayers(dt, t) {
     ud.badge.visible = !self;
     ud.badge.position.y = 2.0 + Math.sin(t * 2 + ud.idx) * 0.02;
     ud.fan.visible = !!settings.vision;
-    const pulse = isDrib ? 1 + Math.sin(t * 6) * 0.07 : 1;
-    ud.ring.scale.setScalar(pulse); ud.halo.scale.setScalar(pulse);
+    const selp = SEL.id === p.id;
+    const pulse = selp ? 1.3 + Math.sin(t * 7) * 0.08 : (isDrib ? 1 + Math.sin(t * 6) * 0.07 : 1);
+    ud.ring.scale.setScalar(pulse); ud.halo.scale.setScalar(selp ? pulse * 1.15 : pulse);
+    ud.halo.material.opacity = selp ? 0.6 : 0.2;
+    ud.ring.material.color.setHex(selp ? 0xfacc15 : (ud.off ? 0x38bdf8 : 0xfb7185));
     if (isDrib) { a.updateMatrixWorld(true); dribHand = ud.J.arm[-1].hand.getWorldPosition(_v.a); dribYaw = ud.yaw; }
   }
   const ball = T3.ball;
@@ -2898,8 +3142,9 @@ function rebuildDraw3D() {
 
 /* --- カメラ --- */
 const CAM_HINT = {
-  overview: '全体俯瞰：ドラッグで360°回転／ピンチでズーム／選手をタップで向きを45°回転',
-  goal: 'ゴール裏（リング上）：ペイント内のスペースとカットのコース — 選手タップで向きを回転',
+  overview: '選手・ボールはドラッグで移動／2回タップでパス／選んでから床をタップで向きを変える／空いた所のドラッグで視点を回転',
+  top: '真上：コート全体を上から。選手・ボールはドラッグで移動／2回タップでパス／ピンチで拡大・縮小',
+  goal: 'ゴール裏：選手・ボールはドラッグで移動／2回タップでパス／選んでから床をタップで向きを変える',
 };
 function setCam(mode, id) {
   T3.cam = mode; if (id) T3.eyeId = id;
@@ -2912,9 +3157,8 @@ function setCam(mode, id) {
   } else {
     ctl.enabled = true; c.fov = 50; c.updateProjectionMatrix();
     if (mode === 'goal') { c.position.set(14.9, 4.7, 0); ctl.target.set(4.5, 0.6, 0); }
-    else if (S.court === 'full') { c.position.set(0, 15, 20); ctl.target.set(0, 0, 0); }
-    else { c.position.set(6.5, 9.5, 13); ctl.target.set(7, 0, 0); }
-    ctl.update();
+    else fitCamera(mode);
+    ctl.update(); T3.userMoved = false;
     $('#v3hint').textContent = CAM_HINT[mode] || '';
   }
   update3D(); updateCamBar();
@@ -2948,6 +3192,28 @@ function resize3D() {
   if (!T3.renderer || !cssW || !cssH) return;
   T3.renderer.setSize(cssW, cssH);
   T3.camera.aspect = cssW / cssH; T3.camera.updateProjectionMatrix();
+  // 画面の向き・大きさが変わったら、手で動かしていない限りコート全体を収め直す
+  if (!T3.userMoved && (T3.cam === 'overview' || T3.cam === 'top')) { fitCamera(T3.cam); T3.controls.update(); }
+}
+// コートの四隅（エンドライン・サイドライン＋外周の余白、ゴールの高さまで）が必ず1画面に収まる距離を計算
+function fitCamera(mode) {
+  const c = T3.camera, ctl = T3.controls, half = S.court !== 'full';
+  const x0 = half ? 12.8 : -2.6, x1 = 30.6, y0 = -1.8, y1 = 16.8;          // コート座標（m）：外周の余白とゴールの支柱まで
+  const target = new THREE.Vector3(wx((x0 + x1) / 2), 0.6, wz((y0 + y1) / 2));
+  const pts = [];
+  for (const x of [x0, x1]) for (const y of [y0, y1]) for (const h of [0, 4]) pts.push(new THREE.Vector3(wx(x), h, wz(y)));
+  // 真上：ほぼ垂直（画面の上＝奥のサイドライン）／全体：ベンチ側の斜め上から
+  const dir = mode === 'top' ? new THREE.Vector3(0, 1, 0.012).normalize()
+    : (half ? new THREE.Vector3(-0.32, 1.0, 1.12) : new THREE.Vector3(0, 1.0, 1.12)).normalize();
+  const fits = d => {
+    c.position.copy(target).addScaledVector(dir, d); c.lookAt(target); c.updateMatrixWorld(true);
+    return pts.every(p => { const v = p.clone().project(c); return v.z < 1 && Math.abs(v.x) <= 0.9 && Math.abs(v.y) <= 0.86; });
+  };
+  let lo = 2, hi = 150;
+  for (let i = 0; i < 26; i++) { const m = (lo + hi) / 2; if (fits(m)) hi = m; else lo = m; }
+  c.position.copy(target).addScaledVector(dir, hi);
+  ctl.target.copy(target);
+  ctl.maxDistance = Math.max(160, hi * 2.5);
 }
 function start3DLoop() {
   if (T3.raf || !T3.renderer) return;
@@ -2967,22 +3233,80 @@ $('#camBar').addEventListener('click', e => {
   const b = e.target.closest('[data-cam]'); if (!b || !T3.renderer) return;
   setCam(b.dataset.cam, b.dataset.id);
 });
-$('#btnAutoFace').addEventListener('click', () => {
+function toggleAutoFace() {
   settings.autoFace = !settings.autoFace; saveSettings(); updateFaceBtns(); requestRender();
-  toast(settings.autoFace ? '自動正対ON：オフェンスはボール（保持者はゴール）、DFはボールとマークマンの間を向きます' : '自動正対OFF：3Dで選手をタップすると45°ずつ向きを変えられます');
-});
-$('#btnVision').addEventListener('click', () => {
+  toast(settings.autoFace ? '体の向き：自動（ボールの方を向きます）' : '体の向き：手動（選手を選んでコートをタップした方向を向きます）');
+}
+function toggleVision() {
   settings.vision = !settings.vision; saveSettings(); updateFaceBtns();
-  toast(settings.vision ? '視野（前方120°）を表示：扇の外が死角です' : '視野表示をOFFにしました');
-});
+  toast(settings.vision ? '視野（前方120°）を表示：扇の外が死角です' : '視野の表示をやめました');
+}
 
 /* =====================================================================
-   ライブ遅延（タイムシフト）— MediaRecorderで区切り録画し、遅延秒数ぶん後に再生
+   ライブ遅延（タイムシフト）
+   数秒ごとの短い区間に分けて録画 → 端末内の大容量ストレージ（IndexedDB）に順次保存
+   → 「今から○秒／○分前」の位置を連続再生。古い区間は自動削除（メモリを圧迫しない）
    ===================================================================== */
-const L = { stream: null, facing: 'environment', delay: [3, 5, 10, 15].includes(settings.liveDelay) ? settings.liveDelay : 5,
-  mirror: false, pip: true, gen: 0, rec: null, segTimer: 0, queue: [], cur: null, paused: false, waiting: false,
-  t0: 0, mime: '', playTok: 0, wake: null, resumeOnShow: false, starting: false };
+const LIVE_SHORT = [3, 5, 10, 30], LIVE_LONG = [300, 900, 1800, 3600, 5400];
+const L = { stream: null, facing: 'environment',
+  delay: (isFinite(settings.liveDelay) && settings.liveDelay >= 2 && settings.liveDelay <= 10800) ? settings.liveDelay : 5,
+  mirror: false, pip: true, gen: 0, rec: null, segTimer: 0, segs: [], seq: 0, bytes: 0, cur: null, pre: null,
+  paused: false, follow: true, mime: '', playTok: 0, wake: null, resumeOnShow: false, starting: false,
+  seeking: false, recStart: 0, waitNext: false, loading: false, quotaText: '' };
+const nowS = () => (performance.timeOrigin + performance.now()) / 1000;
+const fmtLag = s => {
+  s = Math.max(0, Math.round(s)); if (s < 60) return `${s}秒`;
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+  return h ? `${h}時間${m}分` : (x && s < 600 ? `${m}分${x}秒` : `${m}分`);
+};
+const fmtClock = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(x).padStart(2, '0'); };
+const segLen = () => (L.delay <= 5 ? 2 : L.delay <= 30 ? 3 : 4);          // 区間の長さ（秒）
+const bitrate = () => (L.delay >= 300 ? 1200000 : 2500000);                // 長時間は容量を抑える
 
+/* --- 保存先：IndexedDB（使えない端末ではメモリに直近だけ保持） --- */
+const LDB = { db: null, ok: true, mem: new Map() };
+function ldbOpen() {
+  return new Promise(res => {
+    if (LDB.db) return res(LDB.db);
+    let rq; try { rq = indexedDB.open('tacboard-live', 1); } catch (_) { LDB.ok = false; return res(null); }
+    rq.onupgradeneeded = () => rq.result.createObjectStore('segs', { keyPath: 'id' });
+    rq.onsuccess = () => { LDB.db = rq.result; res(LDB.db); };
+    rq.onerror = () => { LDB.ok = false; res(null); };
+  });
+}
+const ldbStore = mode => LDB.db.transaction('segs', mode).objectStore('segs');
+async function ldbPut(seg, blob) {
+  LDB.mem.set(seg.id, blob);
+  if (LDB.db && LDB.ok) {
+    try {
+      await new Promise((res, rej) => { const r = ldbStore('readwrite').put({ id: seg.id, blob }); r.onsuccess = res; r.onerror = () => rej(r.error); });
+      seg.inDb = true;
+    } catch (_) { LDB.ok = false; toast('⚠ 端末の空き容量が足りません。長時間の遅延は直近の分だけになります'); }
+  }
+  // メモリには新しい数区間だけ残す（保存済みのものは解放）
+  const keep = new Set(L.segs.slice(-6).map(s => s.id)); if (L.cur) keep.add(L.cur.id); if (L.pre) keep.add(L.pre.seg.id);
+  for (const s of L.segs) if (s.inDb && !keep.has(s.id)) LDB.mem.delete(s.id);
+}
+async function ldbGet(id) {
+  if (LDB.mem.has(id)) return LDB.mem.get(id);
+  if (!LDB.db) return null;
+  return new Promise(res => { try { const r = ldbStore('readonly').get(id); r.onsuccess = () => res(r.result ? r.result.blob : null); r.onerror = () => res(null); } catch (_) { res(null); } });
+}
+function ldbDel(id) { LDB.mem.delete(id); if (LDB.db) { try { ldbStore('readwrite').delete(id); } catch (_) {} } }
+function ldbClear() { LDB.mem.clear(); if (LDB.db) { try { ldbStore('readwrite').clear(); } catch (_) {} } }
+ldbOpen().then(() => ldbClear()); // 前回ページを開いたときの録画は使わないので起動時に片付ける
+
+async function updateQuota() {
+  try {
+    if (!navigator.storage || !navigator.storage.estimate) return;
+    const e = await navigator.storage.estimate();
+    const free = (e.quota || 0) - (e.usage || 0);
+    L.quotaText = free > 0 ? `空き ${free > 1e9 ? (free / 1e9).toFixed(1) + 'GB' : Math.round(free / 1e6) + 'MB'}` : '';
+    return free;
+  } catch (_) { return null; }
+}
+
+/* --- 録画 --- */
 function pickMime() {
   const c = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'];
   for (const m of c) { try { if (MediaRecorder.isTypeSupported(m)) return m; } catch (_) {} }
@@ -3006,132 +3330,236 @@ async function liveStart() {
   }
   L.starting = false;
   if (settings.mode !== 'live') { stopTracks(); return; }
+  await ldbOpen();
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (_) {}
   const pip = $('#lvPip'); pip.srcObject = L.stream; pip.play().catch(() => {});
-  applyMirror(); startCycle(); requestWake(); updateLiveUI();
+  if (!L.segs.length) L.recStart = nowS();
+  L.mime = pickMime(); L.gen++; L.follow = true; L.paused = false;
+  newSegment(L.gen);
+  applyMirror(); requestWake(); updateQuota(); updateLiveUI();
+  lvMsg(null);
 }
 function stopTracks() { if (L.stream) { L.stream.getTracks().forEach(t => t.stop()); L.stream = null; } }
-function resetPlayers() {
-  for (const s of ['#lvA', '#lvB']) { const v = $(s); v.pause(); v.removeAttribute('src'); try { v.load(); } catch (_) {} v.classList.remove('show'); }
-  L.queue.forEach(s => URL.revokeObjectURL(s.url));
-  if (L.cur && !L.queue.includes(L.cur)) URL.revokeObjectURL(L.cur.url);
-  L.queue = []; L.cur = null;
-}
-function startCycle() {
-  L.gen++; const gen = L.gen;
-  clearTimeout(L.segTimer);
-  if (L.rec && L.rec.state !== 'inactive') { try { L.rec.stop(); } catch (_) {} }
-  L.rec = null; resetPlayers();
-  L.paused = false; L.waiting = true; L.t0 = performance.now(); L.mime = pickMime();
-  newSegment(gen); updateLiveUI();
-}
 function newSegment(gen) {
   if (gen !== L.gen || !L.stream) return;
-  const opt = { videoBitsPerSecond: 2500000 }; if (L.mime) opt.mimeType = L.mime;
+  const opt = { videoBitsPerSecond: bitrate() }; if (L.mime) opt.mimeType = L.mime;
   let rec;
   try { rec = new MediaRecorder(L.stream, opt); } catch (_) { try { rec = new MediaRecorder(L.stream); } catch (e) { lvMsg('<big>録画を開始できません</big>'); return; } }
-  const chunks = [], started = performance.now();
+  const chunks = [], started = nowS();
   rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
   rec.onstop = () => {
-    if (gen !== L.gen || !chunks.length) return;
-    const blob = new Blob(chunks, { type: rec.mimeType || L.mime || 'video/mp4' });
-    onSegment({ url: URL.createObjectURL(blob), readyAt: performance.now(), dur: (performance.now() - started) / 1000 });
+    if (!chunks.length) return;
+    const end = nowS(), blob = new Blob(chunks, { type: rec.mimeType || L.mime || 'video/mp4' });
+    const seg = { id: `${++L.seq}_${Math.round(started * 1000)}`, start: started, end, dur: end - started, size: blob.size, inDb: false };
+    L.segs.push(seg); L.bytes += blob.size;
+    ldbPut(seg, blob);
+    retention();
   };
   const old = L.rec; L.rec = rec;
   try { rec.start(); } catch (e) { lvMsg('<big>録画を開始できません</big>'); return; }
   if (old && old.state !== 'inactive') { try { old.stop(); } catch (_) {} }
-  L.segTimer = setTimeout(() => newSegment(gen), L.delay * 1000);
+  L.segTimer = setTimeout(() => newSegment(gen), segLen() * 1000);
 }
-function onSegment(seg) {
-  L.queue.push(seg);
-  while (L.queue.length > 4) { const s = L.queue.shift(); if (s !== L.cur) URL.revokeObjectURL(s.url); }
-  if (L.waiting) { L.waiting = false; lvMsg(null); updateLiveUI(); }
-  if (!L.paused) loadSeg(seg, 0, true);
+// 遅延時間＋10分（最低5分）より古い区間は自動で削除
+function retention() {
+  const cut = nowS() - Math.max(L.delay + 600, 300);
+  const busy = s => s === L.cur || (L.pre && L.pre.seg === s);
+  while (L.segs.length > 3 && L.segs[0].end < cut && !busy(L.segs[0])) dropOldest();
+  if (!LDB.ok) while (L.bytes > 350e6 && L.segs.length > 3 && !busy(L.segs[0])) dropOldest(); // 保存先が使えない時はメモリ上限
 }
-// 隠れている方の<video>に読み込み → 準備できたら表示を切り替え（ちらつき防止）
-function loadSeg(seg, t, autoplay) {
-  const a = $('#lvA'), b = $('#lvB');
-  const nxt = a.classList.contains('show') ? b : a, cur = nxt === a ? b : a;
-  const tok = ++L.playTok;
-  const swap = () => {
-    if (tok !== L.playTok) return;
-    nxt.classList.add('show'); cur.classList.remove('show'); cur.pause();
-    const old = L.cur; L.cur = seg;
-    if (old && old !== seg && !L.queue.includes(old)) URL.revokeObjectURL(old.url);
-  };
-  nxt.muted = true; nxt.playsInline = true;
-  nxt.addEventListener('loadeddata', () => {
-    if (tok !== L.playTok) return;
-    const dur = isFinite(nxt.duration) ? nxt.duration : seg.dur;
-    if (t > 0.05) { try { nxt.currentTime = Math.max(0, Math.min(t, dur - 0.05)); } catch (_) {} }
-    if (autoplay) nxt.play().then(swap).catch(swap);
-    else { nxt.pause(); if (t > 0.05) nxt.addEventListener('seeked', swap, { once: true }); else swap(); }
-  }, { once: true });
-  nxt.src = seg.url; nxt.load();
-}
+function dropOldest() { const s = L.segs.shift(); L.bytes -= s.size; ldbDel(s.id); }
+
+/* --- 再生（2つの<video>を交互に使い、次の区間を先読みして途切れを減らす） --- */
+const lvVids = () => [$('#lvA'), $('#lvB')];
 const shownVideo = () => document.querySelector('.lv-main.show');
+const hiddenVideo = () => { const [a, b] = lvVids(); return a.classList.contains('show') ? b : a; };
+async function setSrc(el, seg) {
+  const blob = await ldbGet(seg.id); if (!blob) return false;
+  if (el._url) URL.revokeObjectURL(el._url);
+  el._url = URL.createObjectURL(blob); el._seg = seg; el.src = el._url; el.load();
+  return true;
+}
+function waitReady(el) {
+  return new Promise(res => {
+    if (el.readyState >= 2) return res();
+    const f = () => { el.removeEventListener('loadeddata', f); res(); };
+    el.addEventListener('loadeddata', f); setTimeout(f, 2500);
+  });
+}
+async function loadSeg(seg, off, autoplay) {
+  const tok = ++L.playTok, el = hiddenVideo();
+  el.muted = true; el.playsInline = true;
+  if (el._seg !== seg) { if (!(await setSrc(el, seg))) return false; }
+  if (L.pre && L.pre.el === el) L.pre = null;
+  await waitReady(el); if (tok !== L.playTok) return false;
+  const dur = isFinite(el.duration) && el.duration > 0 ? el.duration : seg.dur;
+  try { el.currentTime = Math.max(0, Math.min(off, dur - 0.05)); } catch (_) {}
+  if (autoplay) { try { await el.play(); } catch (_) {} } else el.pause();
+  if (tok !== L.playTok) return false;
+  const old = shownVideo();
+  el.classList.add('show'); if (old && old !== el) { old.classList.remove('show'); old.pause(); }
+  L.cur = seg; L.waitNext = false;
+  return true;
+}
+const findSeg = t => L.segs.find(s => s.end > t) || null;
+function nextSegOf(seg) { const i = L.segs.indexOf(seg); return i >= 0 ? (L.segs[i + 1] || null) : (L.segs.find(s => s.start >= seg.end - 0.05) || null); }
+async function playAt(t, autoplay = true) {
+  const seg = findSeg(t); if (!seg) return false;
+  return loadSeg(seg, Math.max(0, t - seg.start), autoplay);
+}
+function viewTime() { const v = shownVideo(); return L.cur && v ? L.cur.start + (v.currentTime || 0) : null; }
+function advance() {
+  if (L.paused || !L.cur) return;
+  const nx = nextSegOf(L.cur);
+  if (!nx) { L.waitNext = true; return; }
+  if (L.pre && L.pre.seg === nx && L.pre.ready) {
+    const h = L.pre.el, old = shownVideo(); L.pre = null;
+    h.play().catch(() => {});
+    h.classList.add('show'); if (old && old !== h) { old.classList.remove('show'); old.pause(); }
+    L.cur = nx; L.playTok++;
+  } else loadSeg(nx, 0, true);
+}
+lvVids().forEach(v => v.addEventListener('ended', () => { if (v.classList.contains('show')) advance(); }));
+function preloadNext() {
+  if (!L.cur || L.paused || L.pre || L.loading) return;
+  const nx = nextSegOf(L.cur); if (!nx) return;
+  const el = hiddenVideo();
+  L.pre = { seg: nx, el, ready: false };
+  const job = L.pre;
+  (el._seg === nx ? Promise.resolve(true) : setSrc(el, nx)).then(ok => {
+    if (!ok || L.pre !== job) return;
+    waitReady(el).then(() => { if (L.pre !== job) return; try { el.currentTime = 0; } catch (_) {} el.pause(); job.ready = true; });
+  });
+}
+
+/* --- 操作 --- */
+function setDelay(d) {
+  d = Math.round(clamp(d, 2, 10800));
+  L.delay = d; settings.liveDelay = d; saveSettings();
+  L.follow = true; L.paused = false;
+  if (L.segs.length) {
+    const t = nowS() - d;
+    if (t >= L.segs[0].start) { L.loading = true; playAt(t).finally(() => { L.loading = false; }); }
+    else { L.cur = null; L.pre = null; lvVids().forEach(v => { v.pause(); v.classList.remove('show'); }); }
+  }
+  retention(); updateLiveUI();
+  toast(`遅延を ${fmtLag(d)} にしました`);
+  if (d >= 300) updateQuota().then(free => {
+    const need = bitrate() / 8 * (d + 600);
+    if (free != null && free < need * 1.1) toast(`⚠ 空き容量が足りない可能性があります（目安 ${Math.round(need / 1e6)}MB 必要）`);
+  });
+}
 function togglePause() {
-  if (!L.stream || L.waiting) return;
-  L.paused = !L.paused;
-  if (L.paused) { const v = shownVideo(); if (v) v.pause(); }
+  if (!L.cur) return;
+  const v = shownVideo();
+  if (!L.paused) { L.paused = true; if (v) v.pause(); L.pre = null; }
   else {
-    // 再開：最新の区間を「ちょうど遅延秒数前」の位置から再生し直す
-    const last = L.queue[L.queue.length - 1];
-    if (last) loadSeg(last, (performance.now() - last.readyAt) / 1000, true);
+    L.paused = false;
+    if (L.delay <= 30) { L.follow = true; L.loading = true; playAt(nowS() - L.delay).finally(() => { L.loading = false; }); } // 短い遅延：設定の遅れに戻る
+    else { L.follow = false; if (v) v.play().catch(() => {}); }                                                         // 長い遅延：止めた所から続きを再生
   }
   updateLiveUI();
 }
 function stepFrozen(d) {
-  if (!L.paused) return;
-  const v = shownVideo(); if (!v || !L.cur) return;
+  if (!L.paused || !L.cur) return;
+  const v = shownVideo(); if (!v) return;
   const dur = isFinite(v.duration) ? v.duration : L.cur.dur;
   const t = v.currentTime + d;
-  const i = L.queue.indexOf(L.cur);
-  if (t < 0 && i > 0) { const prev = L.queue[i - 1]; loadSeg(prev, prev.dur + t, false); return; }
-  if (t > dur && i >= 0 && i < L.queue.length - 1) { loadSeg(L.queue[i + 1], t - dur, false); return; }
+  if (t < 0) { const i = L.segs.indexOf(L.cur); if (i > 0) { const p = L.segs[i - 1]; loadSeg(p, p.dur + t, false); } return; }
+  if (t > dur) { const n = nextSegOf(L.cur); if (n) loadSeg(n, t - dur, false); return; }
   v.currentTime = clamp(t, 0, Math.max(0, dur - 0.05));
+}
+function seekTo(t) {
+  if (!L.segs.length) return;
+  const lo = L.segs[0].start, hi = L.segs[L.segs.length - 1].end - 0.3;
+  L.follow = false; L.pre = null; L.loading = true;
+  playAt(clamp(t, lo, hi), !L.paused).finally(() => { L.loading = false; });
+  updateLiveUI();
+}
+function followDelay() {
+  L.follow = true; L.paused = false; L.pre = null;
+  const t = nowS() - L.delay;
+  if (L.segs.length && t >= L.segs[0].start) { L.loading = true; playAt(t).finally(() => { L.loading = false; }); }
+  else { L.cur = null; lvVids().forEach(v => { v.pause(); v.classList.remove('show'); }); }
+  updateLiveUI();
+}
+function clearLiveData() {
+  confirmBox('録画データをすべて削除して空き容量を戻しますか？<br>（カメラが動いていれば、ここから新しく録画を続けます）', '削除', () => {
+    L.playTok++; L.cur = null; L.pre = null; L.paused = false; L.follow = true;
+    lvVids().forEach(v => { v.pause(); v.classList.remove('show'); if (v._url) { URL.revokeObjectURL(v._url); v._url = null; } v._seg = null; v.removeAttribute('src'); });
+    L.segs = []; L.bytes = 0; ldbClear(); L.recStart = nowS();
+    updateQuota(); updateLiveUI(); toast('録画データを削除しました');
+  }, true);
 }
 function liveStop() {
   L.gen++; clearTimeout(L.segTimer);
   if (L.rec && L.rec.state !== 'inactive') { try { L.rec.stop(); } catch (_) {} }
   L.rec = null; stopTracks();
   $('#lvPip').srcObject = null;
-  resetPlayers(); L.paused = false; L.waiting = false;
+  // 録画済みの区間は残す（カメラ停止後も追っかけ再生・巻き戻しで振り返れる）
+  L.follow = false; L.paused = true; L.pre = null;
+  lvVids().forEach(v => v.pause());
   if (L.wake) { L.wake.release().catch(() => {}); L.wake = null; }
-  lvMsg('<big>カメラ停止中</big><small>「● カメラ開始」を押すと、指定秒数遅れの映像を表示します</small>');
+  if (!L.segs.length) lvMsg('<big>カメラ停止中</big><small>「● カメラ開始」を押すと、指定した時間だけ遅れた映像を表示します</small>');
   updateLiveUI();
 }
 async function requestWake() { try { if (navigator.wakeLock) L.wake = await navigator.wakeLock.request('screen'); } catch (_) {} }
 function applyMirror() { ['#lvA', '#lvB', '#lvPip'].forEach(s => $(s).classList.toggle('mirror', L.mirror)); }
-function setDelay(d) {
-  L.delay = d; settings.liveDelay = d; saveSettings(); updateLiveUI();
-  if (L.stream) { startCycle(); toast(`遅延を${d}秒に変更しました`); }
-}
 function updateLiveUI() {
   const on = !!L.stream;
   const s = $('#lvStart'); s.textContent = on ? '■ カメラ停止' : '● カメラ開始'; s.classList.toggle('primary', !on); s.classList.toggle('danger', on);
-  document.querySelectorAll('#lvDelay button').forEach(b => b.classList.toggle('on', +b.dataset.d === L.delay));
+  document.querySelectorAll('.lv-dseg button').forEach(b => b.classList.toggle('on', +b.dataset.d === L.delay));
+  const preset = LIVE_SHORT.includes(L.delay) || LIVE_LONG.includes(L.delay);
+  const mi = $('#lvMin'); mi.classList.toggle('on', !preset); if (!preset && document.activeElement !== mi) mi.value = Math.round(L.delay / 60);
   $('#lvMirror').classList.toggle('on', L.mirror);
   $('#lvPipBtn').classList.toggle('on', L.pip); $('#lvPip').classList.toggle('hide', !L.pip || !on);
   const p = $('#lvPause');
-  p.disabled = !on || L.waiting;
-  p.classList.toggle('paused', L.paused);
-  p.textContent = L.paused ? '▶ 再開（ディレイ再生に戻る）' : '❚❚ 一時停止（フリーズ）';
-  $('#lvBack').disabled = $('#lvFwd').disabled = !L.paused;
-  $('#lvFreeze').classList.toggle('show', L.paused);
+  p.disabled = !L.cur;
+  p.classList.toggle('paused', L.paused && !!L.cur);
+  p.textContent = L.paused && L.cur ? (L.delay <= 30 ? '▶ 再開（設定の遅れに戻る）' : '▶ 再開（止めた所から続き）') : '❚❚ 一時停止（フリーズ）';
+  $('#lvBack').disabled = $('#lvFwd').disabled = !(L.paused && L.cur);
+  $('#lvFreeze').classList.toggle('show', L.paused && !!L.cur);
+  $('#lvFollow').hidden = L.follow || !L.stream;
+  $('#lvClear').disabled = !L.segs.length;
+  const has = L.segs.length > 0;
+  $('#lvSeek').disabled = !has;
+  document.querySelectorAll('.lv-jump[data-j]').forEach(b => { b.disabled = !has; });
 }
-// カウントダウン・状態表示
+// 状態表示・遅れの補正・先読み（0.1秒ごと）
 setInterval(() => {
-  if (settings.mode !== 'live' || !L.stream) { $('#lvBadge').textContent = ''; return; }
-  const badge = $('#lvBadge');
-  badge.classList.toggle('paused', L.paused);
-  badge.textContent = L.paused ? '❚❚ フリーズ中' : (L.waiting ? '● 録画中' : `● ${L.delay}秒遅れ`);
-  if (L.waiting) {
-    const el = (performance.now() - L.t0) / 1000, r = Math.max(0, L.delay - el);
-    lvMsg(`<small>ディレイ再生開始まで</small><b>${Math.ceil(r)}</b><big>秒</big>
-      <div class="lv-bar"><i style="width:${clamp(el / L.delay * 100, 0, 100)}%"></i></div>
-      <small style="margin-top:10px">カメラはもう録っています。プレーを始めてください</small>`);
+  if (settings.mode !== 'live') return;
+  const now = nowS(), has = L.segs.length > 0;
+  const oldest = has ? L.segs[0].start : null, edge = has ? L.segs[L.segs.length - 1].end : now;
+  const vt = viewTime();
+  // 設定の遅れに追従
+  if (L.stream && L.follow && !L.paused && !L.loading && !L.waitNext) {
+    const target = now - L.delay;
+    if (!L.cur) { if (has && target >= oldest) { L.loading = true; playAt(target).finally(() => { L.loading = false; updateLiveUI(); }); } }
+    else if (vt != null && Math.abs((now - vt) - L.delay) > 1.5) { L.loading = true; playAt(target).finally(() => { L.loading = false; }); }
   }
+  if (L.waitNext && L.cur && nextSegOf(L.cur)) advance();
+  preloadNext();
+  // カウントダウン
+  if (L.stream && L.follow && !L.cur) {
+    const base = oldest != null ? oldest : L.recStart, el = now - base, r = Math.max(0, L.delay - el);
+    lvMsg(`<small>${L.delay >= 60 ? 'ディレイ再生（追っかけ再生）開始まで' : 'ディレイ再生開始まで'}</small><b>${r >= 60 ? fmtClock(r) : Math.ceil(r)}</b><big>${r >= 60 ? '' : '秒'}</big>
+      <div class="lv-bar"><i style="width:${clamp(el / L.delay * 100, 0, 100)}%"></i></div>
+      <small style="margin-top:10px">${L.delay >= 60 ? '録画はもう始まっています。待つ間も、下のバーで録画済みの場面を見返せます' : 'カメラはもう録っています。プレーを始めてください'}</small>`);
+  } else if (L.stream || has) lvMsg(null);
+  // バッジ
+  const badge = $('#lvBadge');
+  badge.classList.toggle('paused', L.paused && !!L.cur);
+  badge.textContent = !L.cur ? (L.stream ? '● 録画中' : '') : (L.paused ? '❚❚ フリーズ中' : (L.follow ? `● ${fmtLag(L.delay)}遅れ` : `▶ ${fmtLag(now - vt)}前の映像`));
+  // 追っかけシークバー
+  if (has && !L.seeking) {
+    const span = Math.max(0.1, edge - oldest);
+    $('#lvSeek').value = vt != null ? Math.round(clamp((vt - oldest) / span, 0, 1) * 1000) : 1000;
+    $('#lvOld').textContent = `${fmtLag(now - oldest)}前`;
+    $('#lvNow').textContent = vt != null ? `▶ ${fmtLag(now - vt)}前を再生中` : '';
+  }
+  $('#lvInfo').textContent = has ? `録画 ${fmtClock(edge - oldest)}・${Math.round(L.bytes / 1e6)}MB${L.quotaText ? '・' + L.quotaText : ''}${LDB.ok ? '' : '（メモリ）'}` : (L.quotaText || '');
 }, 100);
+setInterval(() => { if (settings.mode === 'live') updateQuota(); }, 15000);
 
 $('#lvStart').addEventListener('click', () => { if (L.stream) liveStop(); else liveStart(); });
 $('#lvFlip').addEventListener('click', async () => {
@@ -3142,7 +3570,33 @@ $('#lvFlip').addEventListener('click', async () => {
 });
 $('#lvMirror').addEventListener('click', () => { L.mirror = !L.mirror; applyMirror(); updateLiveUI(); });
 $('#lvPipBtn').addEventListener('click', () => { L.pip = !L.pip; updateLiveUI(); });
-$('#lvDelay').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) setDelay(+b.dataset.d); });
+$('#lvClear').addEventListener('click', clearLiveData);
+document.querySelectorAll('.lv-dseg').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('[data-d]'); if (b) setDelay(+b.dataset.d); }));
+$('#lvMinSet').addEventListener('click', () => {
+  const m = parseFloat($('#lvMin').value);
+  if (!isFinite(m) || m <= 0 || m > 180) { toast('1〜180分の数字を入れてください'); return; }
+  $('#lvMin').blur(); setDelay(m * 60);
+});
+$('#lvMin').addEventListener('keydown', e => { if (e.key === 'Enter') $('#lvMinSet').click(); });
+const sk = $('#lvSeek');
+sk.addEventListener('pointerdown', () => { L.seeking = true; });
+sk.addEventListener('input', () => {
+  L.seeking = true;
+  if (!L.segs.length) return;
+  const lo = L.segs[0].start, hi = L.segs[L.segs.length - 1].end, t = lo + (hi - lo) * sk.value / 1000;
+  $('#lvNow').textContent = `⇢ ${fmtLag(nowS() - t)}前へ`;
+});
+sk.addEventListener('change', () => {
+  if (!L.segs.length) { L.seeking = false; return; }
+  const lo = L.segs[0].start, hi = L.segs[L.segs.length - 1].end;
+  seekTo(lo + (hi - lo) * sk.value / 1000);
+  setTimeout(() => { L.seeking = false; }, 300);
+});
+document.querySelectorAll('.lv-jump[data-j]').forEach(b => b.addEventListener('click', () => {
+  const base = viewTime() ?? (nowS() - L.delay);
+  seekTo(base + (+b.dataset.j));
+}));
+$('#lvFollow').addEventListener('click', followDelay);
 $('#lvPause').addEventListener('click', togglePause);
 $('#lvStage').addEventListener('click', e => { if (!e.target.closest('.lv-pip')) togglePause(); });
 $('#lvBack').addEventListener('click', () => stepFrozen(-0.5));
@@ -3150,8 +3604,417 @@ $('#lvFwd').addEventListener('click', () => stepFrozen(0.5));
 document.addEventListener('visibilitychange', () => {
   if (settings.mode !== 'live') return;
   if (document.hidden) { if (L.stream) { L.resumeOnShow = true; liveStop(); } }
-  else if (L.resumeOnShow) { L.resumeOnShow = false; liveStart(); }
+  else if (L.resumeOnShow) { L.resumeOnShow = false; liveStart(); } // 録画済みの区間は残したまま続きを録る
 });
+
+/* =====================================================================
+   セットプレーの一連の動き：ステップ記録＆自動再生（2D・3D共通）
+   ===================================================================== */
+const STEP_SEC = 1.6; // 1ステップの移動にかける時間（1.0x）
+const PB = { playing: false, t: 0, rate: 1, last: 0, sel: -1 };
+function stepKeys() { return (S.steps || []).map((x, i) => Object.assign({ t: i * STEP_SEC }, x)); }
+function stepEnd() { return Math.max(0, ((S.steps || []).length - 1) * STEP_SEC); }
+function addStep() {
+  pbPause();
+  if (!Array.isArray(S.steps)) S.steps = [];
+  if (S.steps.length >= 40) { toast('ステップは40個までです'); return; }
+  pushHistory();
+  const k = snapKey(0); delete k.t;
+  S.steps.push(k);
+  PB.t = (S.steps.length - 1) * STEP_SEC; PB.sel = -1;
+  commit();
+  const n = S.steps.length;
+  toast(n === 1 ? 'Step 1（スタートの配置）を記録 → 駒とボールを動かして「＋ステップ」' : `Step ${n} を記録しました（▶ で Step 1 から自動再生）`);
+}
+function pbFrame() {
+  if (!PB.playing) return;
+  const now = performance.now(), dt = Math.min(0.1, (now - PB.last) / 1000); PB.last = now;
+  PB.t = Math.min(stepEnd(), PB.t + dt * PB.rate);
+  applyInterp(stepKeys(), PB.t);
+  updateStepProgress();
+  if (PB.t >= stepEnd()) { PB.playing = false; renderSteps(); saveCurrentSoon(); return; }
+  requestAnimationFrame(pbFrame);
+}
+function pbPlay() {
+  if (!S.steps || S.steps.length < 2) { toast('ステップを2つ以上記録すると自動再生できます'); return; }
+  if (PB.playing) { pbPause(); return; }
+  if (PB.t >= stepEnd() - 0.01) PB.t = 0;
+  pushHistory();
+  PB.playing = true; PB.last = performance.now(); PB.sel = -1;
+  renderSteps(); requestAnimationFrame(pbFrame);
+}
+function pbPause() { if (PB.playing) { PB.playing = false; renderSteps(); saveCurrentSoon(); } }
+function pbStop(reset) { PB.playing = false; PB.sel = -1; if (reset) PB.t = 0; }
+function pbRestart() {
+  if (!S.steps || !S.steps.length) return;
+  const was = PB.playing; PB.playing = false; PB.t = 0;
+  applyInterp(stepKeys(), 0); updateStepProgress();
+  if (was) { PB.playing = true; PB.last = performance.now(); requestAnimationFrame(pbFrame); }
+  renderSteps();
+}
+function jumpStep(i) {
+  pbPause();
+  if (PB.sel === i) { openStepMenu(i); return; }
+  PB.sel = i; PB.t = i * STEP_SEC;
+  applyInterp(stepKeys(), PB.t); renderSteps();
+}
+function openStepMenu(i) {
+  openModal(`<h2>Step ${i + 1}</h2>
+    <div class="alist">
+      <button class="btn" data-a="over">⤓ 今の駒の位置でこのステップを上書き</button>
+      <button class="btn" data-a="ins">＋ この後ろに今の盤面を挿入</button>
+      <button class="btn danger" data-a="del">🗑 このステップを削除</button>
+      <button class="btn" data-a="close" style="justify-content:center">閉じる</button>
+    </div>`, el => {
+    el.querySelector('[data-a=close]').addEventListener('click', closeModal);
+    const k = () => { const x = snapKey(0); delete x.t; return x; };
+    el.querySelector('[data-a=over]').addEventListener('click', () => { pushHistory(); S.steps[i] = k(); closeModal(); commit(); toast(`Step ${i + 1} を上書きしました`); });
+    el.querySelector('[data-a=ins]').addEventListener('click', () => { pushHistory(); S.steps.splice(i + 1, 0, k()); PB.sel = i + 1; closeModal(); commit(); toast(`Step ${i + 2} として挿入しました`); });
+    el.querySelector('[data-a=del]').addEventListener('click', () => { pushHistory(); S.steps.splice(i, 1); PB.sel = -1; PB.t = Math.min(PB.t, stepEnd()); closeModal(); commit(); toast(`Step ${i + 1} を削除しました`); });
+  });
+}
+function openStepsMore() {
+  const n = (S.steps || []).length;
+  openModal(`<h2>ステップ（${n}）</h2>
+    <p class="msub" style="margin-bottom:12px">「＋ステップ」で今の駒とボールの位置を順番に記録 → ▶で自動再生。ステップ番号を1回タップで移動、もう1回で上書き／挿入／削除。<br>記録したステップは「＋ 保存」「上書き」でセットプレーと一緒に保存されます。</p>
+    <div class="alist">
+      ${n ? '<button class="btn" data-a="last">⌫ 最後のステップを削除</button><button class="btn danger" data-a="all">🗑 すべてのステップを削除</button>' : ''}
+      <button class="btn" data-a="close" style="justify-content:center">閉じる</button>
+    </div>`, el => {
+    el.querySelector('[data-a=close]').addEventListener('click', closeModal);
+    const l = el.querySelector('[data-a=last]'), a = el.querySelector('[data-a=all]');
+    if (l) l.addEventListener('click', () => { pushHistory(); S.steps.pop(); PB.sel = -1; PB.t = Math.min(PB.t, stepEnd()); closeModal(); commit(); });
+    if (a) a.addEventListener('click', () => { pushHistory(); S.steps = []; pbStop(true); closeModal(); commit(); toast('ステップをすべて削除しました（↶で取り消し）'); });
+  });
+}
+function updateStepProgress() {
+  const end = stepEnd();
+  $('#stProgI').style.width = end ? `${(PB.t / end * 100).toFixed(1)}%` : '0';
+  const cur = Math.round(PB.t / STEP_SEC);
+  document.querySelectorAll('#stChips .st-chip').forEach((c, i) => c.classList.toggle('cur', i === cur && (PB.playing || PB.sel < 0)));
+}
+function renderSteps() {
+  const el = $('#stChips'); if (!el) return;
+  const n = (S.steps || []).length;
+  el.innerHTML = n
+    ? S.steps.map((_, i) => `<button class="st-chip ${i === PB.sel ? 'sel' : ''}" data-s="${i}">${i === 0 ? 'S1' : i + 1}</button>`).join('')
+    : '<span class="st-empty">「● 動き記録」→ 駒やボールを動かす → 「■ 記録停止」→ ▶ 再生</span>';
+  const p = $('#stPlay'); p.disabled = n < 2 || REC.on; p.classList.toggle('on', PB.playing); p.textContent = PB.playing ? '⏸ 停止' : '▶ 再生';
+  const ad = $('#stAdd'); ad.firstChild.nodeValue = REC.on ? '■ 記録停止' : '● 動き記録';
+  $('#stAddSub').textContent = REC.on ? `Step ${n} まで記録済み` : (n ? `${n}ステップ記録済み` : '駒を動かすと自動で記録');
+  app.classList.toggle('rec', REC.on);
+  const rs = $('#recStep'); if (rs) rs.textContent = `Step ${n}`;
+  $('#stRestart').disabled = n < 2;
+  document.querySelectorAll('#stSpeed button').forEach(b => b.classList.toggle('on', +b.dataset.r === PB.rate));
+  updateStepProgress();
+}
+$('#stAdd').addEventListener('click', recToggle);
+$('#stPlay').addEventListener('click', pbPlay);
+$('#stRestart').addEventListener('click', pbRestart);
+$('#stMore').addEventListener('click', openStepsMore);
+$('#stSpeed').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b) return; PB.rate = +b.dataset.r; renderSteps(); });
+$('#stChips').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (b) jumpStep(+b.dataset.s); });
+
+/* =====================================================================
+   直感ジェスチャー：タップで選択／ダブルタップでパス／コートをタップで向き変更
+   ===================================================================== */
+function handlePieceTap(id) {
+  const now = performance.now();
+  if (SEL.lastTap && SEL.lastTap.id === id && now - SEL.lastTap.t < 380) { SEL.lastTap = null; SEL.id = null; passTo(id); return; }
+  SEL.lastTap = { id, t: now };
+  SEL.id = SEL.id === id ? null : id;
+  if (SEL.id && SEL.hintShown < 3) {
+    SEL.hintShown++;
+    const p = S.pieces.find(q => q.id === id);
+    toast(`${p.label}${p.team === 'o' ? '番' : ''}を選択：向けたい方向のコートをタップ／ダブルタップでパス`);
+  }
+  requestRender();
+}
+function passTo(id) {
+  const p = S.pieces.find(q => q.id === id); if (!p) return;
+  if (p.team !== 'o') { toast('パスはオフェンス（1〜5）の選手へ出せます'); return; }
+  if (S.ball.holder === id) { toast(`${p.label}番はもうボールを持っています`); return; }
+  pbPause(); pushHistory();
+  const bc = ballCourt(), from = { x: bc.x, y: bc.y };
+  const dist = Math.hypot(p.x - from.x, p.y - from.y), dur = Math.min(750, 260 + dist * 45);
+  S.ball.holder = null;
+  const t0 = performance.now();
+  const step = () => {
+    const u = Math.min(1, (performance.now() - t0) / dur), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    S.ball.x = r2(from.x + (p.x - from.x) * e); S.ball.y = r2(from.y + (p.y - from.y) * e);
+    requestRender();
+    if (u < 1) requestAnimationFrame(step);
+    else { S.ball.holder = id; S.ball.x = p.x; S.ball.y = p.y; commit(); recordStep(); toast(`🏀 パス → ${p.label}番`); }
+  };
+  requestAnimationFrame(step);
+}
+function faceToward(id, cx, cy) {
+  const p = S.pieces.find(q => q.id === id); if (!p) return;
+  if (Math.hypot(cx - p.x, cy - p.y) < 0.3) return;
+  pushHistory();
+  if (settings.autoFace) {
+    // 自動 → 手動に切替。ほかの選手は今の向きのまま固定する
+    settings.autoFace = false; saveSettings(); updateFaceBtns();
+    const drib = dribblerId();
+    for (const q of S.pieces) {
+      if (q.id === id || typeof q.face === 'number') continue;
+      const a = T3.avatars && T3.avatars[q.id];
+      const y = a && !a.userData.first ? a.userData.yaw : autoYaw(q, drib);
+      if (y != null) q.face = Math.round(y * 180 / Math.PI);
+    }
+    toast('体の向きを「手動」にしました（⚙️メニューで自動に戻せます）');
+  }
+  p.face = Math.round(Math.atan2(cx - p.x, cy - p.y) * 180 / Math.PI);
+  commit(); recordStep();
+}
+
+/* =====================================================================
+   ● 動き記録（REC）：記録中は駒を動かすたびに自動でステップを追加
+   ===================================================================== */
+const REC = { on: false, lastAt: 0, base: 0 };
+function recToggle() {
+  pbPause();
+  if (REC.on) {
+    REC.on = false; PB.t = stepEnd(); PB.sel = -1; renderSteps(); saveCurrentSoon();
+    const n = S.steps.length;
+    toast(n > 1 ? `■ 記録終了（${n}ステップ）。下の「▶ 再生」で確認できます` : '■ 記録を終了しました（駒を動かすとステップが増えます）');
+    const pb = $('#stPlay'); pb.classList.add('flash'); setTimeout(() => pb.classList.remove('flash'), 2400);
+    return;
+  }
+  if (S.steps && S.steps.length) {
+    openModal(`<h2>● 動き記録</h2><p class="msub">このプレーには ${S.steps.length} ステップの動きが記録されています。</p>
+      <div class="alist" style="margin-top:14px">
+        <button class="btn primary" data-a="new">● 最初から記録し直す（今の配置がStep 1）</button>
+        <button class="btn" data-a="add">＋ 続きを記録する</button>
+        <button class="btn" data-a="c" style="justify-content:center">やめる</button>
+      </div>`, el => {
+      el.querySelector('[data-a=c]').addEventListener('click', closeModal);
+      el.querySelector('[data-a=new]').addEventListener('click', () => { closeModal(); startRec(false); });
+      el.querySelector('[data-a=add]').addEventListener('click', () => { closeModal(); startRec(true); });
+    });
+    return;
+  }
+  startRec(false);
+}
+function startRec(append) {
+  pushHistory();
+  if (!append || !Array.isArray(S.steps)) S.steps = [];
+  SEL.id = null;
+  REC.on = true;
+  if (!S.steps.length) { const k = snapKey(0); delete k.t; S.steps.push(k); }
+  REC.base = S.steps.length; REC.lastAt = 0;
+  PB.t = stepEnd(); renderSteps(); requestRender();
+  toast('● 記録中：駒やボールを動かすたびに自動で記録。終わったら「■ 記録停止」');
+}
+// 記録中に駒が動いたら呼ぶ。1.5秒以内に続けて動かした駒は同じステップにまとめる（同時の動き）
+function recordStep() {
+  if (!REC.on) return;
+  const k = snapKey(0); delete k.t;
+  const now = performance.now();
+  if (S.steps.length > REC.base && now - REC.lastAt < 1500) S.steps[S.steps.length - 1] = k;
+  else S.steps.push(k);
+  if (S.steps.length > 40) S.steps.length = 40;
+  REC.lastAt = now; PB.t = stepEnd();
+  renderSteps(); saveCurrentSoon();
+  const b = $('#recBadge'); b.classList.remove('tick'); void b.offsetWidth; b.classList.add('tick');
+}
+
+/* =====================================================================
+   タイムアウト即応：クイック・プレーバー（横スワイプのカード）
+   ===================================================================== */
+function quickList() {
+  const order = CATS.map(c => c.id);
+  return plays.slice().sort((a, b) => order.indexOf(a.cat) - order.indexOf(b.cat));
+}
+function renderQuick() {
+  const el = $('#quickbar'); if (!el) return;
+  const list = quickList();
+  el.innerHTML = (list.length ? list.map(p => {
+    const c = catById(p.cat), n = p.board && p.board.steps ? p.board.steps.length : 0;
+    return `<button class="qcard ${S.playId === p.id ? 'on' : ''}" data-q="${esc(p.id)}" style="--c:${c.color}">
+      <canvas class="qthumb"></canvas>
+      <span class="qbody"><span class="qcat">${c.short}</span><span class="qtitle">${esc(p.title)}</span>
+      <span class="qsub">${n > 1 ? `▶ ${n}ステップ自動再生` : '盤面を呼び出す'}</span></span></button>`;
+  }).join('') : '') + `<button class="qcard qadd" id="qAdd"><span class="qplus">＋</span><span class="qbody"><span class="qtitle">今の盤面を保存</span><span class="qsub">ここにカードが増えます</span></span></button>`;
+  el.querySelectorAll('[data-q]').forEach(b => { const p = getPlay(b.dataset.q); if (p && validBoard(p.board)) renderThumb(b.querySelector('canvas'), p.board, 76, 56); });
+}
+function quickPlay(id) {
+  const p = getPlay(id); if (!p) return;
+  if (REC.on) { REC.on = false; }
+  loadPlay(id);
+  if (S.steps && S.steps.length > 1) { PB.t = 0; applyInterp(stepKeys(), 0); pbPlay(); }
+  renderQuick();
+}
+$('#quickbar').addEventListener('click', e => {
+  if (e.target.closest('#qAdd')) { openSaveNew(); return; }
+  const b = e.target.closest('[data-q]'); if (b) quickPlay(b.dataset.q);
+});
+
+/* =====================================================================
+   ⚙️ メニュー（使用頻度の低い管理機能をまとめて収納）
+   ===================================================================== */
+function openMenu() {
+  const row = (a, ic, label, sub) => `<button class="mrow" data-m="${a}"><span class="mi">${ic}</span><span class="mt">${label}${sub ? `<small>${sub}</small>` : ''}</span></button>`;
+  openModal(`<div class="menu-head"><b>⚙️ メニュー</b><button class="ibtn" data-m="close" aria-label="閉じる">✕</button></div>
+    <div class="menu-sec">データ</div>
+    ${row('export', '⇪', 'データを書き出す', 'バックアップ・他のiPadへ共有（AirDrop等）')}
+    ${row('import', '⇩', 'データを読み込む', '書き出したファイルを取り込む')}
+    <div class="menu-sec">表示・操作</div>
+    ${row('sidebar', '📚', settings.mode === 'mtg' ? 'プレー集を開く' : (settings.sidebar ? 'プレー集パネルを隠す' : 'プレー集パネルを表示'), '左のカテゴリー別リスト')}
+    ${row('theme', '🎨', `コートの色：${settings.theme === 'wood' ? '木目' : '白'}`, 'タップで切り替え')}
+    ${row('face', '🧭', `体の向き：${settings.autoFace ? '自動' : '手動'}`, '自動＝ボールの方を向く／手動＝タップで指定')}
+    ${row('vision', '👁', `視野の扇：${settings.vision ? '表示中' : '表示しない'}`, '3Dで前方120°と死角を表示')}
+    ${row('pencil', '✎', `Apple Pencil優先：${settings.pencil ? 'ON' : 'OFF'}`, 'ON＝ペンで線を描き、指で駒を動かす')}
+    <div class="menu-sec">リセット・ヘルプ</div>
+    ${row('reset', '↺', '初期配置に戻す', '駒・線・動きの記録をリセット（↶ 1つ戻るで取り消し可）')}
+    ${row('help', '📖', '使い方ガイド')}
+    <p class="msub" style="margin:14px 4px 0;font-size:12px">データはこのiPadのSafariに自動保存されています。</p>`, el => {
+    el.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => {
+      const m = b.dataset.m;
+      if (m === 'close') return closeModal();
+      if (m === 'export') { closeModal(); return exportData(); }
+      if (m === 'import') { closeModal(); return $('#fileInput').click(); }
+      if (m === 'help') return openHelp();
+      if (m === 'reset') { closeModal(); REC.on = false; return resetBoard(); }
+      if (m === 'sidebar') {
+        if (settings.mode === 'mtg') { closeModal(); app.classList.add('pb-open'); return; }
+        settings.sidebar = !settings.sidebar; saveSettings(); updateSidebar();
+      }
+      if (m === 'theme') toggleTheme();
+      if (m === 'face') toggleAutoFace();
+      if (m === 'vision') toggleVision();
+      if (m === 'pencil') togglePencil();
+      openMenu(); // 表示を更新
+    }));
+  }, 'drawer');
+}
+
+/* =====================================================================
+   端末内の動画ファイル（MP4等）— YouTubeと同じ操作で使えるようにする
+   ===================================================================== */
+const LV = { el: $('#localVid'), name: null, url: null, pending: null };
+let ytSaved = null, ytSavedReady = false;
+const localPlayer = {
+  isLocal: true,
+  getCurrentTime: () => LV.el.currentTime || 0,
+  getDuration: () => (isFinite(LV.el.duration) ? LV.el.duration : 0),
+  seekTo: t => { try { LV.el.currentTime = Math.max(0, t); } catch (_) {} },
+  playVideo: () => { LV.el.play().catch(() => {}); },
+  pauseVideo: () => LV.el.pause(),
+  stopVideo: () => LV.el.pause(),
+  getPlayerState: () => (LV.el.ended ? 0 : (LV.el.paused ? 2 : 1)),
+  setPlaybackRate: r => { LV.el.playbackRate = r; },
+  getVideoData: () => ({ video_id: playerVideo, title: LV.name }),
+  loadVideoById() {}, cueVideoById() {},
+};
+LV.el.addEventListener('play', () => onYTState({ data: 1 }));
+LV.el.addEventListener('pause', () => onYTState({ data: 2 }));
+LV.el.addEventListener('ended', () => onYTState({ data: 0 }));
+const localIdOf = name => 'local:' + String(name).slice(0, 100);
+function activateLocal(id, start, autoplay) {
+  if (player && !player.isLocal) { ytSaved = player; ytSavedReady = playerReady; try { player.pauseVideo(); } catch (_) {} }
+  player = localPlayer; playerReady = true; playerVideo = id;
+  $('#playerBox').classList.add('local'); setEmpty(null);
+  $('#vUrl').value = '📁 ' + LV.name;
+  LV.el.playbackRate = V.rate;
+  const go = () => { if (start) LV.el.currentTime = start; if (autoplay) LV.el.play().catch(() => {}); };
+  if (LV.el.readyState >= 1) go(); else LV.el.addEventListener('loadedmetadata', go, { once: true });
+}
+function deactivateLocal() {
+  LV.el.pause();
+  $('#playerBox').classList.remove('local');
+  player = ytSaved; playerReady = !!ytSaved && ytSavedReady;
+}
+function loadLocalFile(file) {
+  if (!file) return;
+  if (LV.url) URL.revokeObjectURL(LV.url);
+  LV.url = URL.createObjectURL(file); LV.name = file.name;
+  LV.el.src = LV.url;
+  const id = localIdOf(file.name);
+  const v = addVideo(id, ''); v.title = file.name; v.local = true;
+  if (V.cur !== id) { V.inT = V.outT = null; V.pendingKeys = []; const ec = V.editClipId && getClip(V.editClipId); if (ec && ec.videoId !== id) V.editClipId = null; updateInOut(); }
+  V.cur = id; activeClipId = null; saveV();
+  const pend = LV.pending; LV.pending = null;
+  activateLocal(id, pend ? pend.start : 0, pend ? pend.autoplay : false);
+  if (pend && pend.clipId) { activeClipId = pend.clipId; guardUntil = Date.now() + 2000; }
+  renderClips();
+  toast(`📁 ${file.name} を読み込みました（端末内の動画は自動トレースも使えます）`);
+}
+function openLocalById(id, start, autoplay) {
+  if (LV.url && localIdOf(LV.name) === id) {
+    V.cur = id; saveV(); activateLocal(id, start, autoplay); renderClips(); return;
+  }
+  // ファイルはブラウザに保存できないので、選び直してもらう
+  LV.pending = { id, start, autoplay, clipId: activeClipId };
+  toast(`動画ファイル「${id.slice(6)}」を選んでください`);
+  $('#localFile').click();
+}
+$('#btnVFile').addEventListener('click', () => { LV.pending = null; $('#localFile').click(); });
+$('#localFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; loadLocalFile(f); });
+
+/* --- 自動トレース（実験機能）：ローカル動画のフレームを解析して作戦盤へ反映 --- */
+function openTrace() {
+  if (!player || !player.isLocal) {
+    openModal(`<h2>🧪 自動トレース（実験機能）</h2>
+      <p class="msub" style="font-size:15px;color:var(--text)">YouTubeの映像は、セキュリティ上の制限で中身（ピクセル）を解析できません。</p>
+      <p class="msub" style="margin-top:10px">YouTubeでは代わりに、クリップに<b>ステップを記録したセットプレーを紐づける「同時シンクロ再生」</b>を使ってください（クリップの「⋯」→ 編集 →「動画と同時シンクロ再生するセットプレー」）。動画の再生・一時停止・ループ・倍速に合わせて作戦盤が自動で動きます。<br><br>自動トレースは「📁」から読み込んだ<b>端末内の動画ファイル</b>で使えます。</p>
+      <div class="mactions"><button class="btn primary" data-x="c">閉じる</button></div>`, el => el.querySelector('[data-x=c]').addEventListener('click', closeModal));
+    return;
+  }
+  const tg = kfTarget();
+  const a = tg ? tg.in : LV.el.currentTime;
+  const b = tg && tg.out != null ? tg.out : Math.min(LV.el.duration || a + 8, a + 8);
+  openModal(`<h2>🧪 自動トレース（実験機能）</h2>
+    <p class="msub">${fmt(a)}〜${fmt(b)} の映像を0.25秒ごとに解析し、<b>ボール（オレンジ色）の移動</b>と<b>選手の動きの重心</b>を作戦盤に線で描きます。固定カメラの映像ほど正確です。</p>
+    <label>映像の撮り方</label>
+    <select id="trMap"><option value="half">ハーフコート：ゴールが画面の奥（ベースラインの反対側から撮影）</option><option value="full">フルコート：サイドライン側から横向きに撮影</option></select>
+    <div class="mactions"><button class="btn" data-x="c">キャンセル</button><button class="btn primary" data-x="go">解析開始</button></div>`, el => {
+    el.querySelector('[data-x=c]').addEventListener('click', closeModal);
+    el.querySelector('[data-x=go]').addEventListener('click', () => { const m = el.querySelector('#trMap').value; closeModal(); runTrace(a, b, m); });
+  });
+}
+async function runTrace(a, b, mapMode) {
+  const el = LV.el; el.pause();
+  if (b - a < 0.5) { toast('解析する区間が短すぎます'); return; }
+  const W = 160, H = 90, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  const seek = t => new Promise(res => { const done = () => { el.removeEventListener('seeked', done); res(); }; el.addEventListener('seeked', done); el.currentTime = t; setTimeout(done, 1500); });
+  const ballPts = [], movePts = [];
+  let prev = null;
+  try {
+    for (let t = a; t <= b + 1e-6; t += 0.25) {
+      await seek(t);
+      cx.drawImage(el, 0, 0, W, H);
+      const d = cx.getImageData(0, 0, W, H).data;
+      let bx = 0, by = 0, bn = 0, mx = 0, my = 0, mn = 0;
+      for (let y = 0, i = 0; y < H; y++) for (let x = 0; x < W; x++, i += 4) {
+        const R = d[i], G = d[i + 1], B = d[i + 2];
+        if (R > 150 && G > 50 && G < 175 && B < 95 && R - G > 45 && R - B > 100) { bx += x; by += y; bn++; }
+        if (prev && Math.abs(R - prev[i]) + Math.abs(G - prev[i + 1]) + Math.abs(B - prev[i + 2]) > 90) { mx += x; my += y; mn++; }
+      }
+      if (bn >= 3 && bn < W * H * 0.05) ballPts.push([bx / bn / W, by / bn / H]);
+      if (mn >= 25) movePts.push([mx / mn / W, my / mn / H]);
+      prev = d;
+      toast(`🧪 解析中… ${Math.round((t - a) / (b - a) * 100)}%`);
+    }
+  } catch (e) { toast('⚠ この動画は解析できませんでした'); return; }
+  await seek(a);
+  const toCourt = ([u, v]) => mapMode === 'full' ? [r2(clamp(u * 28, -1, 29)), r2(clamp(v * 15, -1, 16))] : [r2(clamp(28 - v * 14, 13.8, 29)), r2(clamp(u * 15, -1, 16))];
+  const smooth = pts => pts.map((p, i) => { const w = pts.slice(Math.max(0, i - 1), i + 2); return [w.reduce((s, q) => s + q[0], 0) / w.length, w.reduce((s, q) => s + q[1], 0) / w.length]; });
+  const thin = pts => { const out = []; for (const p of pts) { const l = out[out.length - 1]; if (!l || Math.hypot(p[0] - l[0], p[1] - l[1]) > 0.35) out.push(p); } return out; };
+  const ballPath = thin(smooth(ballPts).map(toCourt)), movePath = thin(smooth(movePts).map(toCourt));
+  if (ballPath.length < 2 && movePath.length < 2) { toast('動きを検出できませんでした（固定カメラ・明るい映像で試してください）'); return; }
+  pushHistory();
+  if (mapMode === 'full') S.court = 'full';
+  if (ballPath.length >= 2) {
+    S.drawings.push({ type: 'free', color: '#f97316', pts: ballPath });
+    S.ball.holder = null; S.ball.x = ballPath[0][0]; S.ball.y = ballPath[0][1];
+  }
+  if (movePath.length >= 2) S.drawings.push({ type: 'cut', color: '#7c3aed', pts: movePath });
+  commit();
+  toast(`🧪 トレース完了：ボール ${ballPath.length}点（オレンジ線）／動きの重心 ${movePath.length}点（紫の矢印）`);
+}
+$('#vTrace').addEventListener('click', openTrace);
 
 /* =====================================================================
    イベント登録
@@ -3174,9 +4037,8 @@ $('#toolBtns').addEventListener('click', e => {
   if (LINE_TOOLS.includes(settings.tool)) settings.lastLine = settings.tool;
   saveSettings(); updateTools();
 });
-$('#swatches').addEventListener('click', e => {
-  const b = e.target.closest('[data-color]'); if (!b) return;
-  settings.color = b.dataset.color;
+$('#btnColor').addEventListener('click', () => {
+  settings.color = COLORS[(COLORS.indexOf(settings.color) + 1) % COLORS.length];
   if (settings.tool === 'move' || settings.tool === 'erase') { if (!settings.pencil) settings.tool = settings.lastLine; }
   saveSettings(); updateTools();
 });
@@ -3185,7 +4047,6 @@ document.querySelectorAll('[data-preset]').forEach(b => b.addEventListener('clic
 $('#btnDef').addEventListener('click', toggleDef);
 $('#btnUndo').addEventListener('click', undo);
 $('#btnClear').addEventListener('click', clearDrawings);
-$('#btnReset').addEventListener('click', resetBoard);
 $('#btnSaveNew').addEventListener('click', openSaveNew);
 $('#btnSaveTop').addEventListener('click', openSaveNew);
 $('#btnOverwrite').addEventListener('click', () => {
@@ -3200,16 +4061,15 @@ $('#btnSidebar').addEventListener('click', () => {
   settings.sidebar = !settings.sidebar; saveSettings(); updateSidebar();
 });
 $('#modeSeg').addEventListener('click', e => { const b = e.target.closest('[data-mode]'); if (b) setMode(b.dataset.mode); });
-$('#btnTheme').addEventListener('click', () => {
-  settings.theme = settings.theme === 'wood' ? 'white' : 'wood'; saveSettings(); updateThemeBtn(); layout(); renderList();
+function toggleTheme() {
+  settings.theme = settings.theme === 'wood' ? 'white' : 'wood'; saveSettings(); layout(); renderList(); renderQuick();
   if (T3.renderer) updateCourtTexture();
-});
-$('#btnPencil').addEventListener('click', () => {
-  settings.pencil = !settings.pencil; settings.pencilAsked = true; saveSettings(); updatePencilBtn(); updateTools();
+}
+function togglePencil() {
+  settings.pencil = !settings.pencil; settings.pencilAsked = true; saveSettings(); updateTools();
   toast(settings.pencil ? 'ペン優先：ペン＝線を描く／指＝駒を動かす' : '指もペンも選択中のツールで操作します');
-});
-$('#btnExport').addEventListener('click', exportData);
-$('#btnImport').addEventListener('click', () => $('#fileInput').click());
+}
+$('#btnMenu').addEventListener('click', openMenu);
 
 document.addEventListener('keydown', e => {
   if (modal.classList.contains('open')) { if (e.key === 'Escape') closeModal(); return; }
@@ -3239,11 +4099,11 @@ updateSidebar(); updateThemeBtn(); updatePencilBtn();
 updateCourtSeg(); updateDefBtn(); updateUndo(); updateCurPlay();
 if (V.cur && getVideo(V.cur)) $('#vUrl').value = getVideo(V.cur).url;
 updateInOut(); updateRateUI(); renderClips();
-updateViewSeg(); updateLiveUI(); updateFaceBtns();
+updateViewSeg(); updateLiveUI(); updateFaceBtns(); renderSteps();
 if (settings.mode === 'live') settings.mode = 'court'; // カメラは操作してから起動する
 setMode(settings.mode);
 layout();
-$('#btnHelp').addEventListener('click', openHelp);
+
 // 起動時に使い方ガイドを自動表示（「次回から自動表示しない」をONにした端末を除く）
 if (!guideHidden()) openHelp();
 })();
