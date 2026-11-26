@@ -1166,6 +1166,7 @@ function commit() {
   if (!view || view.court !== S.court) layout(); else requestRender();
   saveCurrentSoon();
   updateCourtSeg(); updateDefBtn(); updateUndo(); updateCurPlay(); renderSteps();
+  if (!PB.playing) { RT.active = false; RT.faces = {}; RT.screens = new Set(); }
 }
 function undo() {
   if (!history.length) { toast('これ以上戻れません'); return; }
@@ -1315,7 +1316,7 @@ function endPointer(e, cancelled) {
   active.delete(e.pointerId);
   if (a.kind === 'draw') {
     if (!cancelled && a.d.pts.length >= 2 && a.len >= 14) {
-      pushHistory(); S.drawings.push(a.d);
+      pushHistory(); assignDrawing(a.d); S.drawings.push(a.d);
       if (LINE_TOOLS.includes(a.d.type)) settings.lastLine = a.d.type;
       commit();
     } else requestRender();
@@ -1391,7 +1392,7 @@ function getPlay(id) { return plays.find(p => p.id === id); }
 function loadPlay(id) {
   const p = getPlay(id); if (!p || !validBoard(p.board)) return;
   pushHistory();
-  Object.assign(S, { steps: [] }, clone(p.board), { playId: p.id, clipId: null }); pbStop(true); REC.on = false; SEL.id = null;
+  Object.assign(S, { steps: [] }, clone(p.board), { playId: p.id, clipId: null }); pbStop(true); REC.on = false; SEL.id = null; PB.prefer = null; PB.mode = 'steps';
   if (S.steps.length > 1) toast(`「${p.title}」：▶ でプレーを自動再生できます（${S.steps.length}ステップ）`);
   active.clear();
   app.classList.remove('pb-open');
@@ -1543,9 +1544,21 @@ function openHelp() {
           <li><b>ダブルタップ</b>：オフェンス（1〜5）をトントンと2回タップ → 今ボールを持っている選手から<b>パス</b>が飛びます。</li>
           <li><b>タップで選ぶ → コートをタップ</b>：選手が黄色く光ったら、向かせたい方向のコートをタップ。<b>その方向へ体の向き</b>が変わります（ディフェンスの構えの指導に）。もう一度選手をタップで選択解除。</li>
           <li><b>ボールを選手の近くで離す</b>：その選手がボールを持ちます。</li>
-          <li><b>右のツール</b>：パス（破線）／ドリブル（波線）／カット（矢印）／スクリーン（T字）／フリー／消しゴム。「線の色」はタップで色が変わります。</li>
+          <li><b>右のツール</b>：パス（破線）／ドリブル（波線）／カット（矢印）／スクリーン（T字）／フリー／消しゴム。「線の色」はタップで色が変わります。<b>3D視点のままでも床に直接描けます</b>（描いている間はカメラは回りません。カメラを回すときは「駒を移動」に戻す）。</li>
           <li><b>下の守備ボタン</b>：マンツーマン／2-3／3-2／1-2-1-1プレスを一発配置。「守備 表示」で出す・隠す。</li>
         </ul>
+      </details>
+
+      <details>
+        <summary>✏️ 矢印を描くだけで、そのとおりに動く</summary>
+        <ol>
+          <li>選手の上（近く）から<b>カット</b>や<b>ドリブル</b>の線を描くと、その選手の<b>走るルート</b>として自動で登録されます（曲線・折れ線もOK）。</li>
+          <li><b>パス</b>の破線は、描き始めの近くの選手から、描き終わりの近くの選手へのパスになります。</li>
+          <li><b>スクリーン</b>のT字線は、終点で足を止めて体を張る構えになります。後に描いたカットは、スクリーンが止まってから走り出します。</li>
+          <li>下の <b>「▶ 再生」</b> で、描いた順に選手が線のとおりに走り（体の向きも進行方向へ）、ドリブルはボールを連れて、パスはタイミングよく飛びます。2D・3D（選手目線も）どちらでも同じです。</li>
+          <li>順番のルール：<b>描いた順</b>に動きます。パスの後に描いた動きは、パスが届いてから始まります。</li>
+        </ol>
+        <div class="note">線を消しゴムで消すと、その動きも消えます。「● 動き記録」と両方ある場合は、▶のときにどちらを再生するか選べます。</div>
       </details>
 
       <details>
@@ -2077,9 +2090,9 @@ function clipForm(o, onOk) {
     : o.boardMode === 'edit-has'
       ? `<label>紐づけた盤面</label><select id="cBoardSel"><option value="keep">そのまま残す</option><option value="replace">現在の作戦盤の盤面で上書きする</option><option value="remove">盤面の紐づけを解除する</option></select>`
       : `<label class="check"><input type="checkbox" id="cBoard">現在の作戦盤の盤面をこのクリップに紐づける</label>`;
-  const animPlays = plays.filter(p => p.board && p.board.steps && p.board.steps.length > 1);
+  const animPlays = plays.filter(p => p.board && ((p.board.steps && p.board.steps.length > 1) || hasRoutes(p.board)));
   const linkUI = `<label>動画と同時シンクロ再生するセットプレー（任意）</label>
-    <select id="cPlay"><option value="">なし</option>${animPlays.map(p => `<option value="${esc(p.id)}" ${o.playId === p.id ? 'selected' : ''}>${esc(catById(p.cat).short)}｜${esc(p.title)}（${p.board.steps.length}ステップ）</option>`).join('')}</select>
+    <select id="cPlay"><option value="">なし</option>${animPlays.map(p => `<option value="${esc(p.id)}" ${o.playId === p.id ? 'selected' : ''}>${esc(catById(p.cat).short)}｜${esc(p.title)}（${p.board.steps && p.board.steps.length > 1 ? p.board.steps.length + 'ステップ' : '矢印の動き'}）</option>`).join('')}</select>
     <p class="msub" style="font-size:12px;margin-top:4px">${animPlays.length ? '選ぶと、動画のIN〜OUTに合わせてそのプレーのアニメーションが自動で同時再生されます（手動キーフレームがあればそちらが優先）。' : 'ステップを記録したセットプレーを保存すると、ここで選べるようになります。'}</p>`;
   openModal(`
     <h2>${o.heading}</h2>
@@ -2250,6 +2263,10 @@ function kfTarget() {
       // 紐づけたセットプレーのステップを、クリップのIN〜OUTに等間隔で割り付けて同時再生
       const st = lp.board.steps, d = (c.out - c.in) / (st.length - 1);
       return { type: 'clip', clip: c, in: c.in, out: c.out, derived: lp, keys: st.map((x, i) => Object.assign({ t: c.in + d * i }, x)) };
+    }
+    if (lp && hasRoutes(lp.board)) {
+      const rk = routeKeysForClip(lp, c);
+      if (rk) return { type: 'clip', clip: c, in: c.in, out: c.out, derived: lp, keys: rk };
     }
     return { type: 'clip', clip: c, in: c.in, out: c.out, keys: c.keys };
   }
@@ -2609,10 +2626,40 @@ function init3D() {
   const rc = new THREE.Raycaster();
   const ndcOf = e => { const b = r.domElement.getBoundingClientRect(); return new THREE.Vector2(((e.clientX - b.left) / b.width) * 2 - 1, -((e.clientY - b.top) / b.height) * 2 + 1); };
   const floorAt = e => { rc.setFromCamera(ndcOf(e), T3.camera); const v = new THREE.Vector3(); return rc.ray.intersectPlane(floor, v) ? v : null; };
-  let g3 = null, extraPointers = 0, ftap = null;
+  let g3 = null, extraPointers = 0, ftap = null, dr3 = null;
+  // 3Dの床に直接描く／消す（2Dと同じ S.drawings を使うので、2D⇄3Dを切り替えても線はそのまま）
+  const courtAt = e => { const f = floorAt(e); return f ? [r2(clamp(f.x + 14, -1.4, 29.4)), r2(clamp(f.z + 7.5, -1.4, 16.4))] : null; };
+  const eraseAt3 = e => {
+    const c = courtAt(e); if (!c) return;
+    let bi = -1, bd = 0.45;
+    S.drawings.forEach((d, i) => {
+      const pts = d.type === 'pass' ? [d.pts[0], d.pts[d.pts.length - 1]] : d.pts;
+      for (let j = 1; j < pts.length; j++) { const dd = distSeg(c[0], c[1], pts[j - 1][0], pts[j - 1][1], pts[j][0], pts[j][1]); if (dd < bd) { bd = dd; bi = i; } }
+    });
+    if (bi >= 0) { if (!dr3.pushed) { pushHistory(); dr3.pushed = true; } S.drawings.splice(bi, 1); commit(); }
+  };
   host.addEventListener('pointerdown', e => {
     if (T3.cam === 'eye' || e.target !== r.domElement) return;
+    if (dr3) { e.stopPropagation(); return; }                       // 描いている間の2本目の指は無視（カメラも回さない）
     if (g3) { extraPointers++; return; }
+    if (e.pointerType === 'pen' && !settings.pencil && !settings.pencilAsked) {
+      settings.pencil = true; settings.pencilAsked = true; saveSettings(); updateTools();
+      toast('Apple Pencilを検出：ペン＝線を描く／指＝駒を動かす');
+    }
+    const tool = effectiveTool(e);
+    if (tool !== 'move') {
+      e.stopPropagation(); e.preventDefault();
+      ctl.enabled = false; pbPause();                                // 描画中はカメラ回転をロック
+      try { host.setPointerCapture(e.pointerId); } catch (_) {}
+      if (tool === 'erase') { dr3 = { kind: 'erase', id: e.pointerId, pushed: false }; eraseAt3(e); return; }
+      let c = courtAt(e); if (!c) { ctl.enabled = true; return; }
+      const h = pick3D(e);
+      if (h && h.kind === 'piece') { const pc = S.pieces.find(q => q.id === h.id); c = [pc.x, pc.y]; } // 選手の上から描き始めたら選手の位置から
+      const d = { type: tool, color: settings.color, pts: [c] };
+      dr3 = { kind: 'draw', id: e.pointerId, d, lx: e.clientX, ly: e.clientY, len: 0 };
+      T3.tempDraw = d; requestRender();
+      return;
+    }
     const hit = pick3D(e);
     if (!hit) { ftap = ftap ? null : { id: e.pointerId, x: e.clientX, y: e.clientY }; return; } // カメラ操作はそのまま
     ftap = null;
@@ -2626,6 +2673,14 @@ function init3D() {
     try { host.setPointerCapture(e.pointerId); } catch (_) {}
   }, { capture: true });
   host.addEventListener('pointermove', e => {
+    if (dr3 && e.pointerId === dr3.id) {
+      e.stopPropagation();
+      if (dr3.kind === 'erase') { eraseAt3(e); return; }
+      const dd = Math.hypot(e.clientX - dr3.lx, e.clientY - dr3.ly);
+      if (dd >= 5) { const c = courtAt(e); if (c) { dr3.len += dd; dr3.lx = e.clientX; dr3.ly = e.clientY; dr3.d.pts.push(c); requestRender(); } }
+      return;
+    }
+    if (dr3) { e.stopPropagation(); return; }
     if (!g3 || e.pointerId !== g3.id) return;
     e.stopPropagation();
     if (!g3.moved) {
@@ -2640,6 +2695,19 @@ function init3D() {
     requestRender(); // 2D作戦盤にもリアルタイム反映
   }, { capture: true });
   const end3 = e => {
+    if (dr3) {
+      e.stopPropagation();
+      if (e.pointerId !== dr3.id) return;
+      const st = dr3; dr3 = null; T3.tempDraw = null;
+      ctl.enabled = T3.cam !== 'eye';                                // 描き終わったらカメラを元に戻す
+      try { host.releasePointerCapture(e.pointerId); } catch (_) {}
+      if (st.kind === 'draw' && e.type === 'pointerup' && st.len >= 14 && st.d.pts.length >= 2) {
+        pushHistory(); assignDrawing(st.d); S.drawings.push(st.d);
+        if (LINE_TOOLS.includes(st.d.type)) settings.lastLine = st.d.type;
+        commit();
+      } else requestRender();
+      return;
+    }
     if (!g3 || e.pointerId !== g3.id) {
       if (extraPointers) extraPointers--;
       if (ftap && ftap.id === e.pointerId) {
@@ -2739,6 +2807,8 @@ const POSES = {
   // 一人称視点の本人用：腕を体の前に寄せ、手元だけが視界の下端に入る
   eye:      { t1: -0.55, t2: 0.95, sp: 0.12, lean: 0.18, aL: [-0.35, 0.10, -0.95], aR: [-0.35, 0.10, -0.95] },
   eyeDrib:  { t1: -0.62, t2: 1.08, sp: 0.16, lean: 0.24, aL: [-0.45, 0.12, -1.05], aR: [-0.25, 0.22, -0.55] },
+  // スクリーン：足を止めて広いスタンス、腕を胸の前で組んで体を張る
+  screen:   { t1: -0.40, t2: 0.62, sp: 0.32, lean: 0.06, aL: [-1.05, -0.32, -1.75], aR: [-1.05, -0.32, -1.75] },
 };
 const GEO = {}, MAT = {};
 function gcache(key, fn) { return GEO[key] || (GEO[key] = fn()); }
@@ -3011,6 +3081,7 @@ function autoYaw(p, drib) {
   return Math.atan2(dx, dy);
 }
 function targetYaw(p, drib) {
+  if (RT.active && RT.faces[p.id] != null) return RT.faces[p.id]; // ルート再生中は走る方向を向く
   if (!settings.autoFace && typeof p.face === 'number') return p.face * Math.PI / 180;
   return autoYaw(p, drib);
 }
@@ -3033,7 +3104,8 @@ function animatePlayers(dt, t) {
     else { const ty = targetYaw(p, drib); if (ty != null) ud.yaw = lerpAngle(ud.yaw, ty, ky); }
     ud.body.rotation.y = ud.yaw;
     const isDrib = p.id === drib;
-    const key = self ? (isDrib ? 'eyeDrib' : 'eye') : (isDrib ? 'dribble' : (p.team === 'd' ? 'defense' : 'ready'));
+    const key = self ? (isDrib ? 'eyeDrib' : 'eye')
+      : (RT.active && RT.screens.has(p.id) ? 'screen' : (isDrib ? 'dribble' : (p.team === 'd' ? 'defense' : 'ready')));
     blendPose(ud.cur, POSES[key], self ? 1 : kpose);
     const bob = isDrib ? -Math.abs(Math.sin(phase * Math.PI)) * 0.012 : Math.sin(t * 2.4 + ud.idx * 1.3) * 0.008;
     ud.J.hips.position.x = p.team === 'd' ? Math.sin(t * 1.7 + ud.idx) * 0.018 : 0;
@@ -3074,7 +3146,7 @@ function update3D() {
     const a = T3.avatars[p.id]; if (!a) continue;
     a.visible = !(p.team === 'd' && !S.showDef);
   }
-  const ds = JSON.stringify(S.drawings);
+  const ds = JSON.stringify(S.drawings) + (T3.tempDraw ? '|' + T3.tempDraw.pts.length : '');
   if (ds !== T3.drawSig) { T3.drawSig = ds; rebuildDraw3D(); }
   if (T3.cam === 'eye') { const ps = piecesSig(); if (ps !== T3.posSig) resetEyeLook(); }
 }
@@ -3101,7 +3173,7 @@ function rebuildDraw3D() {
     const D = new THREE.Vector3(dir.x, 0, dir.y).normalize();
     m.position.copy(V3(tip.x, tip.y)).addScaledVector(D, -0.21); m.quaternion.setFromUnitVectors(UP, D); g.add(m);
   };
-  for (const d of S.drawings) {
+  for (const d of (T3.tempDraw ? S.drawings.concat([T3.tempDraw]) : S.drawings)) {
     if (!d.pts || d.pts.length < 2) continue;
     const col = new THREE.Color(d.color);
     if (d.type === 'pass') {
@@ -3608,10 +3680,155 @@ document.addEventListener('visibilitychange', () => {
 });
 
 /* =====================================================================
+   描いた矢印のとおりに動く（ルート再生）
+   カット・ドリブル・スクリーン → 描き始めの近くの選手の移動ルート
+   パス → 始点の近くの選手から終点の近くの選手へボールが飛ぶ
+   順番：描いた順。パスの後に描いた動きはパスが届いてから。スクリーンの後に描いたカットはスクリーンが止まってから
+   ===================================================================== */
+const RT = { active: false, faces: {}, screens: new Set(), plan: null, mtgCache: null };
+const ROUTE_SPEED = { cut: 4.2, dribble: 3.4, screen: 3.4 }; // m/秒（1.0x）
+const PASS_SPEED = 9;
+const ROUTE_TYPES = ['cut', 'dribble', 'screen', 'pass'];
+const hasRoutes = b => !!(b && b.drawings && b.drawings.some(d => ROUTE_TYPES.includes(d.type) && d.pts && d.pts.length >= 2));
+function nearestPiece(board, x, y, max, filt) {
+  let best = null, bd = max;
+  for (const p of board.pieces) {
+    if (filt && !filt(p)) continue;
+    if (p.team === 'd' && !board.showDef) continue;
+    const d = Math.hypot(p.x - x, p.y - y);
+    if (d < bd) { bd = d; best = p; }
+  }
+  return best;
+}
+// 描いた線を選手に自動で紐づける（スマートルート認識）
+function assignDrawing(d, board = S, quiet = false) {
+  if (!d || !d.pts || d.pts.length < 2) return null;
+  const [x0, y0] = d.pts[0], [x1, y1] = d.pts[d.pts.length - 1];
+  if (d.type === 'cut' || d.type === 'dribble' || d.type === 'screen') {
+    const p = nearestPiece(board, x0, y0, 1.3);
+    if (p) {
+      d.pid = p.id;
+      if (!quiet) toast(`✏️ ${p.label}${p.team === 'o' ? '番' : ''}の${{ cut: 'カット', dribble: 'ドリブル', screen: 'スクリーン' }[d.type]}として登録 —「▶ 再生」で線のとおりに動きます`);
+    } else { delete d.pid; if (!quiet) toast('線の始まりの近くに選手がいないため、ただの線として描きました'); }
+    return p;
+  }
+  if (d.type === 'pass') {
+    const holder = board.ball.holder ? board.pieces.find(q => q.id === board.ball.holder) : null;
+    const f = nearestPiece(board, x0, y0, 1.6, p => p.team === 'o') || holder;
+    const t = f ? nearestPiece(board, x1, y1, 2.2, p => p.team === 'o' && p.id !== f.id) : null;
+    if (f && t) { d.from = f.id; d.to = t.id; if (!quiet) toast(`🏀 ${f.label}番 → ${t.label}番 のパスとして登録`); }
+    else { delete d.from; delete d.to; }
+    return f;
+  }
+  return null;
+}
+function routePath(d, startXY) {
+  const pts = d.pts.map(p => [p[0], p[1]]);
+  if (startXY && Math.hypot(pts[0][0] - startXY[0], pts[0][1] - startXY[1]) > 0.05) pts.unshift(startXY.slice());
+  return resample(chaikin(pts, 2), 0.08);
+}
+function buildRoutePlan(B) {
+  const lines = (B.drawings || []).filter(d => ROUTE_TYPES.includes(d.type) && d.pts && d.pts.length >= 2);
+  for (const d of lines) if (d.type === 'pass' ? !(d.from && d.to) : !d.pid) assignDrawing(d, B, true);
+  const act = lines.filter(d => (d.type === 'pass' ? (d.from && d.to && d.from !== d.to) : !!d.pid) && B.pieces.some(p => p.id === (d.pid || d.from)));
+  if (!act.length) return null;
+  // スタート位置：ルートを持つ選手は「最初の線の描き始め」、それ以外は今の位置
+  const base = {};
+  for (const p of B.pieces) base[p.id] = [p.x, p.y];
+  const seen = new Set();
+  for (const d of act) if (d.type !== 'pass' && !seen.has(d.pid)) { seen.add(d.pid); base[d.pid] = [d.pts[0][0], d.pts[0][1]]; }
+  const firstBall = act.find(d => d.type === 'pass' || d.type === 'dribble');
+  const holder0 = firstBall ? (firstBall.type === 'pass' ? firstBall.from : firstBall.pid) : (B.ball.holder || null);
+  const pos = {}; for (const id in base) pos[id] = base[id].slice();
+  const free = {}, segs = [], passes = [];
+  let lastPass = 0, screensEnd = 0;
+  for (const d of act) {
+    if (d.type === 'pass') {
+      const start = Math.max(lastPass, free[d.from] || 0, free[d.to] || 0);
+      const A = pos[d.from], Bp = pos[d.to], dur = Math.max(0.4, Math.hypot(A[0] - Bp[0], A[1] - Bp[1]) / PASS_SPEED);
+      passes.push({ from: d.from, to: d.to, start, end: start + dur });
+      lastPass = start + dur; screensEnd = 0;
+      free[d.from] = Math.max(free[d.from] || 0, lastPass); free[d.to] = Math.max(free[d.to] || 0, lastPass);
+    } else {
+      const P = routePath(d, pos[d.pid]), L = P[P.length - 1].s;
+      if (L < 0.05) continue;
+      const start = Math.max(free[d.pid] || 0, lastPass, d.type !== 'screen' ? screensEnd : 0);
+      const end = start + L / ROUTE_SPEED[d.type] + 0.15;
+      segs.push({ pid: d.pid, type: d.type, P, L, start, end });
+      free[d.pid] = end; pos[d.pid] = [P[P.length - 1].x, P[P.length - 1].y];
+      if (d.type === 'screen') screensEnd = Math.max(screensEnd, end + 0.25);
+    }
+  }
+  const events = segs.filter(s => s.type === 'dribble').map(s => ({ t: s.start, s }))
+    .concat(passes.map(p => ({ t: p.start, p }))).sort((a, b) => a.t - b.t);
+  const total = Math.max(0.5, ...segs.map(s => s.end), ...passes.map(p => p.end)) + 0.4;
+  return { base, holder0, ball0: { x: B.ball.x, y: B.ball.y }, segs, passes, events, total };
+}
+function routeStateAt(plan, t) {
+  const pos = {}, faces = {}, screens = new Set();
+  for (const id in plan.base) pos[id] = plan.base[id].slice();
+  for (const s of plan.segs) {
+    if (t <= s.start) continue;
+    const u = Math.min(1, (t - s.start) / (s.end - s.start)), e = 0.5 - 0.5 * Math.cos(Math.PI * u), at = e * s.L;
+    const pt = pointAt(s.P, at);
+    pos[s.pid] = [pt.x, pt.y];
+    if (u < 1) {
+      const a = pointAt(s.P, Math.min(s.L, at + 0.35)), b = pointAt(s.P, Math.max(0, at - 0.05));
+      if (Math.hypot(a.x - b.x, a.y - b.y) > 0.01) faces[s.pid] = Math.atan2(a.x - b.x, a.y - b.y); // 進行方向を向く
+      screens.delete(s.pid);
+    } else if (s.type === 'screen') {
+      screens.add(s.pid);
+      const a = pointAt(s.P, Math.max(0, s.L - 0.4)), b = s.P[s.P.length - 1];
+      faces[s.pid] = Math.atan2(b.x - a.x, b.y - a.y);
+    } else { screens.delete(s.pid); delete faces[s.pid]; }
+  }
+  let holder = plan.holder0, ball = null;
+  for (const ev of plan.events) {
+    if (t < ev.t) break;
+    if (ev.s) { holder = ev.s.pid; continue; }
+    const p = ev.p;
+    if (t >= p.end) { holder = p.to; continue; }
+    const u = (t - p.start) / (p.end - p.start), A = pos[p.from], B = pos[p.to];
+    ball = [A[0] + (B[0] - A[0]) * u, A[1] + (B[1] - A[1]) * u]; holder = null;
+    break;
+  }
+  return { pos, faces, screens, holder, ball };
+}
+function applyRouteState(st, target) {
+  for (const p of target.pieces) { const q = st.pos[p.id]; if (q) { p.x = r2(q[0]); p.y = r2(q[1]); } }
+  if (st.ball) { target.ball.holder = null; target.ball.x = r2(st.ball[0]); target.ball.y = r2(st.ball[1]); }
+  else if (st.holder) {
+    target.ball.holder = st.holder;
+    const h = target.pieces.find(q => q.id === st.holder); if (h) { target.ball.x = h.x; target.ball.y = h.y; }
+  }
+}
+function applyRoutes(plan, t) {
+  const st = routeStateAt(plan, t);
+  applyRouteState(st, S);
+  RT.active = true; RT.faces = st.faces; RT.screens = st.screens;
+  requestRender();
+}
+// MTG：紐づけたプレーが矢印だけでできている場合、ルート再生を細かいコマに変換して動画と同期
+function routeKeysForClip(lp, c) {
+  const key = `${lp.id}|${lp.updatedAt}|${c.in}|${c.out}`;
+  if (RT.mtgCache && RT.mtgCache.key === key) return RT.mtgCache.keys;
+  const board = clone(lp.board), plan = buildRoutePlan(board);
+  if (!plan) { RT.mtgCache = { key, keys: null }; return null; }
+  const keys = [], n = Math.max(2, Math.ceil(plan.total / 0.2));
+  for (let i = 0; i <= n; i++) {
+    const t = plan.total * i / n, st = routeStateAt(plan, t);
+    applyRouteState(st, board);
+    keys.push({ t: c.in + (c.out - c.in) * i / n, pieces: board.pieces.map(p => ({ id: p.id, x: p.x, y: p.y })), ball: { x: board.ball.x, y: board.ball.y, holder: board.ball.holder || null }, showDef: board.showDef !== false });
+  }
+  RT.mtgCache = { key, keys };
+  return keys;
+}
+
+/* =====================================================================
    セットプレーの一連の動き：ステップ記録＆自動再生（2D・3D共通）
    ===================================================================== */
 const STEP_SEC = 1.6; // 1ステップの移動にかける時間（1.0x）
-const PB = { playing: false, t: 0, rate: 1, last: 0, sel: -1 };
+const PB = { playing: false, t: 0, rate: 1, last: 0, sel: -1, mode: 'steps', prefer: null };
 function stepKeys() { return (S.steps || []).map((x, i) => Object.assign({ t: i * STEP_SEC }, x)); }
 function stepEnd() { return Math.max(0, ((S.steps || []).length - 1) * STEP_SEC); }
 function addStep() {
@@ -3626,19 +3843,36 @@ function addStep() {
   const n = S.steps.length;
   toast(n === 1 ? 'Step 1（スタートの配置）を記録 → 駒とボールを動かして「＋ステップ」' : `Step ${n} を記録しました（▶ で Step 1 から自動再生）`);
 }
+function pbEnd() { return PB.mode === 'routes' && RT.plan ? RT.plan.total : stepEnd(); }
+function pbApply(t) { if (PB.mode === 'routes' && RT.plan) applyRoutes(RT.plan, t); else applyInterp(stepKeys(), t); }
 function pbFrame() {
   if (!PB.playing) return;
   const now = performance.now(), dt = Math.min(0.1, (now - PB.last) / 1000); PB.last = now;
-  PB.t = Math.min(stepEnd(), PB.t + dt * PB.rate);
-  applyInterp(stepKeys(), PB.t);
+  PB.t = Math.min(pbEnd(), PB.t + dt * PB.rate);
+  pbApply(PB.t);
   updateStepProgress();
-  if (PB.t >= stepEnd()) { PB.playing = false; renderSteps(); saveCurrentSoon(); return; }
+  if (PB.t >= pbEnd()) { PB.playing = false; renderSteps(); saveCurrentSoon(); return; }
   requestAnimationFrame(pbFrame);
 }
-function pbPlay() {
-  if (!S.steps || S.steps.length < 2) { toast('ステップを2つ以上記録すると自動再生できます'); return; }
+// ▶ 再生：「動き記録」のステップ、または描いた矢印のルートを再生
+function pbPlay(forceMode) {
   if (PB.playing) { pbPause(); return; }
-  if (PB.t >= stepEnd() - 0.01) PB.t = 0;
+  const hasSteps = S.steps && S.steps.length >= 2;
+  const plan = buildRoutePlan(S);
+  if (!hasSteps && !plan) { toast('矢印（カット・ドリブル・パス・スクリーン）を描くか、「● 動き記録」で動きを作ると再生できます'); return; }
+  let mode = typeof forceMode === 'string' ? forceMode : (hasSteps && plan ? PB.prefer : (plan ? 'routes' : 'steps'));
+  if (!mode) {
+    openModal(`<h2>▶ どちらを再生しますか？</h2>
+      <div class="alist" style="margin-top:12px">
+        <button class="btn primary" data-a="routes">✏️ 描いた矢印のとおりに動かす</button>
+        <button class="btn" data-a="steps">● 記録した動き（${S.steps.length}ステップ）</button>
+      </div>`, el => el.querySelectorAll('[data-a]').forEach(b => b.addEventListener('click', () => { PB.prefer = b.dataset.a; closeModal(); pbPlay(b.dataset.a); })));
+    return;
+  }
+  if (mode !== PB.mode) PB.t = 0;
+  PB.mode = mode;
+  if (mode === 'routes') RT.plan = plan;
+  if (PB.t >= pbEnd() - 0.01) PB.t = 0;
   pushHistory();
   PB.playing = true; PB.last = performance.now(); PB.sel = -1;
   renderSteps(); requestAnimationFrame(pbFrame);
@@ -3646,16 +3880,19 @@ function pbPlay() {
 function pbPause() { if (PB.playing) { PB.playing = false; renderSteps(); saveCurrentSoon(); } }
 function pbStop(reset) { PB.playing = false; PB.sel = -1; if (reset) PB.t = 0; }
 function pbRestart() {
-  if (!S.steps || !S.steps.length) return;
+  const plan = buildRoutePlan(S), hasSteps = S.steps && S.steps.length;
+  if (PB.mode === 'routes' && !plan && hasSteps) PB.mode = 'steps';
+  if (PB.mode !== 'routes' && !hasSteps && plan) PB.mode = 'routes';
+  if (PB.mode === 'routes') { if (!plan) return; RT.plan = plan; } else if (!hasSteps) return;
   const was = PB.playing; PB.playing = false; PB.t = 0;
-  applyInterp(stepKeys(), 0); updateStepProgress();
+  pbApply(0); updateStepProgress();
   if (was) { PB.playing = true; PB.last = performance.now(); requestAnimationFrame(pbFrame); }
   renderSteps();
 }
 function jumpStep(i) {
   pbPause();
   if (PB.sel === i) { openStepMenu(i); return; }
-  PB.sel = i; PB.t = i * STEP_SEC;
+  PB.sel = i; PB.mode = 'steps'; PB.t = i * STEP_SEC;
   applyInterp(stepKeys(), PB.t); renderSteps();
 }
 function openStepMenu(i) {
@@ -3688,9 +3925,9 @@ function openStepsMore() {
   });
 }
 function updateStepProgress() {
-  const end = stepEnd();
-  $('#stProgI').style.width = end ? `${(PB.t / end * 100).toFixed(1)}%` : '0';
-  const cur = Math.round(PB.t / STEP_SEC);
+  const end = pbEnd();
+  $('#stProgI').style.width = end ? `${(Math.min(PB.t, end) / end * 100).toFixed(1)}%` : '0';
+  const cur = PB.mode === 'routes' ? -1 : Math.round(PB.t / STEP_SEC);
   document.querySelectorAll('#stChips .st-chip').forEach((c, i) => c.classList.toggle('cur', i === cur && (PB.playing || PB.sel < 0)));
 }
 function renderSteps() {
@@ -3698,13 +3935,16 @@ function renderSteps() {
   const n = (S.steps || []).length;
   el.innerHTML = n
     ? S.steps.map((_, i) => `<button class="st-chip ${i === PB.sel ? 'sel' : ''}" data-s="${i}">${i === 0 ? 'S1' : i + 1}</button>`).join('')
-    : '<span class="st-empty">「● 動き記録」→ 駒やボールを動かす → 「■ 記録停止」→ ▶ 再生</span>';
-  const p = $('#stPlay'); p.disabled = n < 2 || REC.on; p.classList.toggle('on', PB.playing); p.textContent = PB.playing ? '⏸ 停止' : '▶ 再生';
+    : (hasRoutes(S)
+      ? `<span class="st-empty">✏️ 矢印 ${S.drawings.filter(d => ROUTE_TYPES.includes(d.type)).length}本 →「▶ 再生」で描いた線のとおりに選手とボールが動きます</span>`
+      : '<span class="st-empty">矢印を描く or「● 動き記録」→ ▶ 再生</span>');
+  const canPlay = n >= 2 || hasRoutes(S);
+  const p = $('#stPlay'); p.disabled = !canPlay || REC.on; p.classList.toggle('on', PB.playing); p.textContent = PB.playing ? '⏸ 停止' : '▶ 再生';
   const ad = $('#stAdd'); ad.firstChild.nodeValue = REC.on ? '■ 記録停止' : '● 動き記録';
   $('#stAddSub').textContent = REC.on ? `Step ${n} まで記録済み` : (n ? `${n}ステップ記録済み` : '駒を動かすと自動で記録');
   app.classList.toggle('rec', REC.on);
   const rs = $('#recStep'); if (rs) rs.textContent = `Step ${n}`;
-  $('#stRestart').disabled = n < 2;
+  $('#stRestart').disabled = !canPlay;
   document.querySelectorAll('#stSpeed button').forEach(b => b.classList.toggle('on', +b.dataset.r === PB.rate));
   updateStepProgress();
 }
@@ -3834,7 +4074,7 @@ function renderQuick() {
     return `<button class="qcard ${S.playId === p.id ? 'on' : ''}" data-q="${esc(p.id)}" style="--c:${c.color}">
       <canvas class="qthumb"></canvas>
       <span class="qbody"><span class="qcat">${c.short}</span><span class="qtitle">${esc(p.title)}</span>
-      <span class="qsub">${n > 1 ? `▶ ${n}ステップ自動再生` : '盤面を呼び出す'}</span></span></button>`;
+      <span class="qsub">${n > 1 ? `▶ ${n}ステップ自動再生` : (hasRoutes(p.board) ? '▶ 矢印のとおりに動く' : '盤面を呼び出す')}</span></span></button>`;
   }).join('') : '') + `<button class="qcard qadd" id="qAdd"><span class="qplus">＋</span><span class="qbody"><span class="qtitle">今の盤面を保存</span><span class="qsub">ここにカードが増えます</span></span></button>`;
   el.querySelectorAll('[data-q]').forEach(b => { const p = getPlay(b.dataset.q); if (p && validBoard(p.board)) renderThumb(b.querySelector('canvas'), p.board, 76, 56); });
 }
@@ -3842,7 +4082,7 @@ function quickPlay(id) {
   const p = getPlay(id); if (!p) return;
   if (REC.on) { REC.on = false; }
   loadPlay(id);
-  if (S.steps && S.steps.length > 1) { PB.t = 0; applyInterp(stepKeys(), 0); pbPlay(); }
+  if ((S.steps && S.steps.length > 1) || hasRoutes(S)) { PB.t = 0; pbPlay(); }
   renderQuick();
 }
 $('#quickbar').addEventListener('click', e => {
@@ -4032,7 +4272,7 @@ $('#playList').addEventListener('click', e => {
 });
 $('#toolBtns').addEventListener('click', e => {
   const b = e.target.closest('[data-tool]'); if (!b) return;
-  if (T3.active) { setView3D(false); toast('2D平面に戻りました（線の描画・駒の移動は2Dで）'); }
+  if (T3.active && b.dataset.tool !== 'move') toast(b.dataset.tool === 'erase' ? '3Dのまま、消したい線をなぞると消えます' : '3Dの床に直接描けます（カメラを回すときは「駒を移動」に戻す）');
   settings.tool = b.dataset.tool;
   if (LINE_TOOLS.includes(settings.tool)) settings.lastLine = settings.tool;
   saveSettings(); updateTools();
