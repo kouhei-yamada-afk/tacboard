@@ -123,6 +123,7 @@ svg{display:block}
 #app.mtg .btn{padding:0 11px;font-size:14px}
 #app.mtg #defbar{gap:5px;padding:8px 6px}
 #app.mtg .preset{font-size:13px}
+.preset{min-width:48px;padding:0 4px}
 #app.mtg .preset small,#app.mtg .dftoggle small{display:none}
 #app.mtg .dftoggle{width:66px;font-size:12.5px}
 
@@ -367,10 +368,21 @@ svg{display:block}
 @keyframes blink{50%{opacity:.25}}
 @keyframes tick{30%{transform:scale(1.08);background:rgba(22,163,74,.95)}}
 #app.rec #recBadge{display:flex}
-#quickbar{flex:none;height:98px;display:flex;gap:8px;padding:9px 10px;overflow-x:auto;background:#0d141c;border-top:1px solid var(--line);touch-action:pan-x;scroll-snap-type:x proximity;scrollbar-width:none}
+#quickwrap{flex:none;background:#0d141c;border-top:1px solid var(--line)}
+#app.mtg #quickwrap,#app.live #quickwrap{display:none}
+#qtabs{display:flex;gap:6px;padding:7px 10px 0;overflow-x:auto;touch-action:pan-x;scrollbar-width:none}
+#qtabs::-webkit-scrollbar{display:none}
+.qtab{flex:none;min-width:72px;height:50px;padding:0 12px;border-radius:12px;background:var(--panel2);border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;position:relative}
+.qtab b{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:var(--c,#cbd5e1)}
+.qtab span{font-size:13.5px;font-weight:800;color:var(--text);white-space:nowrap}
+.qtab i{position:absolute;top:3px;right:6px;font-style:normal;font-size:10px;font-weight:800;color:var(--muted)}
+.qtab.on{border-color:var(--c,#38bdf8);background:var(--panel3);box-shadow:0 0 0 1px var(--c,#38bdf8) inset}
+.qtab.empty{opacity:.5}
+.qtab:active{transform:scale(.96)}
+.qempty{flex:none;display:flex;align-items:center;padding:0 14px;color:var(--muted);font-size:13px;font-weight:700;white-space:nowrap}
+#quickbar{flex:none;height:90px;display:flex;gap:8px;padding:7px 10px 9px;overflow-x:auto;background:#0d141c;border-top:1px solid var(--line);touch-action:pan-x;scroll-snap-type:x proximity;scrollbar-width:none}
 #quickbar::-webkit-scrollbar{display:none}
-#app.mtg #quickbar,#app.live #quickbar{display:none}
-.qcard{flex:none;width:236px;height:80px;display:flex;align-items:center;gap:10px;padding:8px;border-radius:16px;background:var(--panel2);border:1.5px solid var(--line);text-align:left;scroll-snap-align:start;position:relative;overflow:hidden}
+.qcard{flex:none;width:236px;height:74px;display:flex;align-items:center;gap:10px;padding:8px;border-radius:16px;background:var(--panel2);border:1.5px solid var(--line);text-align:left;scroll-snap-align:start;position:relative;overflow:hidden}
 .qcard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,#38bdf8)}
 .qcard.on{border-color:#22c55e;background:#0c2617}
 .qcard:active{transform:scale(.96)}
@@ -574,13 +586,18 @@ svg{display:block}
       <div class="seg st-speed" id="stSpeed"><button data-r="0.5">0.5x</button><button data-r="1">1.0x</button><button data-r="1.5">1.5x</button></div>
       <button class="st-btn" id="stMore" aria-label="ステップ管理">⋯</button>
     </div>
-    <div id="quickbar" class="scrollable"></div>
+    <div id="quickwrap">
+      <div id="qtabs" class="scrollable" role="tablist" aria-label="カテゴリーで絞り込み"></div>
+      <div id="quickbar" class="scrollable"></div>
+    </div>
     <div id="defbar">
       <button class="dftoggle" id="btnDef">守備 表示<small>タップで隠す</small></button>
       <button class="preset" data-preset="man">マンツーマン<small>MAN</small></button>
-      <button class="preset" data-preset="z23">2-3 ゾーン<small>ZONE</small></button>
-      <button class="preset" data-preset="z32">3-2 ゾーン<small>ZONE</small></button>
-      <button class="preset" data-preset="press">1-2-1-1 プレス<small>FULL COURT</small></button>
+      <button class="preset" data-preset="z23">2-3<span class="lg"> ゾーン</span><small>ZONE</small></button>
+      <button class="preset" data-preset="z32">3-2<span class="lg"> ゾーン</span><small>ZONE</small></button>
+      <button class="preset" data-preset="z113">1-1-3<span class="lg"> ゾーン</span><small>ZONE</small></button>
+      <button class="preset" data-preset="press">1-2-1-1<span class="lg"> プレス</span><small>FULL COURT</small></button>
+      <button class="preset" data-preset="press221">2-2-1<span class="lg"> プレス</span><small>FULL COURT</small></button>
     </div>
   </main>
 
@@ -633,6 +650,7 @@ const CATS = [
   { id: 'zone',  short: 'ZONE',  name: 'ゾーンアタック',     color: '#4ade80' },
   { id: 'press', short: 'PRESS', name: 'プレスアタック',     color: '#f472b6' },
   { id: 'def',   short: 'DEF',   name: 'ディフェンス',       color: '#f87171' },
+  { id: 'zdef',  short: 'ZONE DF', name: 'ゾーンディフェンス', color: '#fb923c' },
 ];
 const catById = id => CATS.find(c => c.id === id) || CATS[2];
 
@@ -683,10 +701,12 @@ function presetPositions(kind, pieces) {
     case 'z23':   return [[21.0, 5.4], [21.0, 9.6], [25.2, 2.8], [25.2, 12.2], [25.6, 7.5]];
     case 'z32':   return [[19.8, 7.5], [21.8, 3.0], [21.8, 12.0], [25.4, 5.0], [25.4, 10.0]];
     case 'press': return [[1.4, 8.4], [4.8, 3.6], [4.8, 11.4], [12.0, 7.5], [22.0, 7.5]];
+    case 'z113': return [[19.6, 7.5], [22.3, 7.5], [25.4, 3.0], [25.4, 12.0], [25.9, 7.5]];          // トップ・ハイポスト・ベースライン3人
+    case 'press221': return [[6.5, 4.8], [6.5, 10.2], [12.5, 3.2], [12.5, 11.8], [21.5, 7.5]];       // 前線2・中盤2・セーフティ1
   }
   return null;
 }
-const PRESET_NAMES = { man: 'マンツーマン', z23: '2-3ゾーン', z32: '3-2ゾーン', press: '1-2-1-1プレス' };
+const PRESET_NAMES = { man: 'マンツーマン', z23: '2-3ゾーン', z32: '3-2ゾーン', z113: '1-1-3ゾーン', press: '1-2-1-1プレス', press221: '2-2-1プレス' };
 
 function mkBoard(o, dKind, drawings = [], opts = {}) {
   const pieces = o.map((p, i) => ({ id: 'O' + (i + 1), team: 'o', label: String(i + 1), x: p[0], y: p[1] }));
@@ -1369,7 +1389,7 @@ function applyPreset(kind) {
   const pos = presetPositions(kind, S.pieces);
   pos.forEach((p, i) => { const d = S.pieces.find(q => q.id === 'D' + (i + 1)); d.x = p[0]; d.y = p[1]; });
   S.showDef = true;
-  if (kind === 'press') S.court = 'full';
+  if (kind === 'press' || kind === 'press221') S.court = 'full';
   commit(); recordStep();
   toast(`守備：${PRESET_NAMES[kind]}に配置`);
 }
@@ -1545,7 +1565,7 @@ function openHelp() {
           <li><b>タップで選ぶ → コートをタップ</b>：選手が黄色く光ったら、向かせたい方向のコートをタップ。<b>その方向へ体の向き</b>が変わります（ディフェンスの構えの指導に）。もう一度選手をタップで選択解除。</li>
           <li><b>ボールを選手の近くで離す</b>：その選手がボールを持ちます。</li>
           <li><b>右のツール</b>：パス（破線）／ドリブル（波線）／カット（矢印）／スクリーン（T字）／フリー／消しゴム。「線の色」はタップで色が変わります。<b>3D視点のままでも床に直接描けます</b>（描いている間はカメラは回りません。カメラを回すときは「駒を移動」に戻す）。</li>
-          <li><b>下の守備ボタン</b>：マンツーマン／2-3／3-2／1-2-1-1プレスを一発配置。「守備 表示」で出す・隠す。</li>
+          <li><b>下の守備ボタン</b>：マンツーマン／2-3／3-2／1-1-3ゾーン、1-2-1-1／2-2-1プレスを一発配置。「守備 表示」で出す・隠す。</li>
         </ul>
       </details>
 
@@ -4064,12 +4084,26 @@ function recordStep() {
    ===================================================================== */
 function quickList() {
   const order = CATS.map(c => c.id);
-  return plays.slice().sort((a, b) => order.indexOf(a.cat) - order.indexOf(b.cat));
+  const f = settings.qcat && settings.qcat !== 'all' ? settings.qcat : null;
+  return plays.filter(p => !f || p.cat === f).sort((a, b) => order.indexOf(a.cat) - order.indexOf(b.cat));
+}
+// カテゴリーのタブ（すべて＋各カテゴリー）：タップでカードを絞り込む
+function renderQTabs() {
+  const el = $('#qtabs'); if (!el) return;
+  if (settings.qcat && settings.qcat !== 'all' && !CATS.some(c => c.id === settings.qcat)) settings.qcat = 'all';
+  const cur = settings.qcat || 'all';
+  el.innerHTML = `<button class="qtab ${cur === 'all' ? 'on' : ''}" data-qc="all" role="tab"><b>ALL</b><span>すべて</span><i>${plays.length}</i></button>` +
+    CATS.map(c => {
+      const n = plays.filter(p => p.cat === c.id).length;
+      return `<button class="qtab ${cur === c.id ? 'on' : ''} ${n ? '' : 'empty'}" data-qc="${c.id}" role="tab" style="--c:${c.color}"><b>${c.short}</b><span>${c.name}</span><i>${n}</i></button>`;
+    }).join('');
 }
 function renderQuick() {
   const el = $('#quickbar'); if (!el) return;
+  renderQTabs();
   const list = quickList();
-  el.innerHTML = (list.length ? list.map(p => {
+  const f = settings.qcat && settings.qcat !== 'all' ? catById(settings.qcat) : null;
+  el.innerHTML = (!list.length && f ? `<span class="qempty">「${f.name}」のプレーはまだありません →</span>` : '') + (list.length ? list.map(p => {
     const c = catById(p.cat), n = p.board && p.board.steps ? p.board.steps.length : 0;
     return `<button class="qcard ${S.playId === p.id ? 'on' : ''}" data-q="${esc(p.id)}" style="--c:${c.color}">
       <canvas class="qthumb"></canvas>
@@ -4085,6 +4119,13 @@ function quickPlay(id) {
   if ((S.steps && S.steps.length > 1) || hasRoutes(S)) { PB.t = 0; pbPlay(); }
   renderQuick();
 }
+$('#qtabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-qc]'); if (!b) return;
+  settings.qcat = b.dataset.qc;
+  if (settings.qcat !== 'all') settings.cat = settings.qcat; // 保存するときのカテゴリーもこれに合わせる
+  saveSettings(); renderTabs(); renderList();
+  $('#quickbar').scrollLeft = 0;
+});
 $('#quickbar').addEventListener('click', e => {
   if (e.target.closest('#qAdd')) { openSaveNew(); return; }
   const b = e.target.closest('[data-q]'); if (b) quickPlay(b.dataset.q);
